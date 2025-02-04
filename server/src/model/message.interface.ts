@@ -1,5 +1,5 @@
 export interface Message {
     sender: string;
-    time: Date;
+    time: number;
     content: string;
 }
