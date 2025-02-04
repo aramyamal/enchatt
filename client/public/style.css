@@ -1,0 +1,132 @@
+:root {
+    --font-size-text-desktop: 1.1rem;
+
+    --global-background-color2: 76, 69, 57;
+    --global-background-color: 56, 51, 43;
+    --global-font-color: 255, 240, 206;
+
+    --key2-font-color: 137, 180, 130;
+    --key3-font-color: 125, 174, 163;
+    --key4-font-color: 211, 134, 155;
+
+    --chat-box-height: 100px;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --global-background-color: 249, 247, 235;
+        --global-background-color2: 221, 208, 179;
+        --global-font-color: 72, 54, 39;
+        --key2-font-color: 76, 122, 93;
+        --key3-font-color: 69, 112, 122;
+        --key4-font-color: 148, 94, 128;
+
+    }
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-image: linear-gradient(to right, rgba(var(--global-background-color)), rgba(var(--global-background-color2)));
+}
+
+.top-bar {
+    font-family: "Libre Baskerville", sans-serif;
+    color: rgba(var(--global-font-color));
+}
+
+.container-xxl {
+    max-width: 1800px;
+    font-size: var(--font-size-text-desktop)
+}
+
+.row.top-bar {
+    height: 100%;
+}
+
+.chat-box {
+    height: calc(100vh - var(--chat-box-height));
+    overflow-y: auto;
+    position: relative;
+}
+
+.chat-submit {
+    background: rgba(var(--global-font-color), 0.2);
+    /* Add background to cover content behind */
+    padding: 10px;
+    margin: 0 -20px 0 -20px;
+    height: var(--chat-box-height);
+    border-radius: 20px 20px 0 0;
+}
+
+.chat-submit input.form-control {
+    background-color: rgba(255, 255, 255, 0);
+    border: none;
+    color: rgba(var(--global-font-color));
+}
+
+.chat-submit .input-group-text {
+    background-color: transparent;
+    border: none;
+    color: rgba(var(--global-font-color));
+}
+
+.chat-submit input.form-control::placeholder {
+    color: rgba(var(--global-font-color), 0.7);
+    font-style: italic;
+    opacity: 1;
+}
+
+.input-group-text {
+    padding-right: 0;
+}
+
+.key2 {
+    color: rgba(var(--key2-font-color)) !important;
+}
+
+.key3 {
+    color: rgba(var(--key3-font-color)) !important;
+}
+
+.key4 {
+    color: rgba(var(--key4-font-color)) !important;
+}
+
+.chat-submit input.form-control.key2::placeholder {
+    color: rgba(var(--key2-font-color), 0.7) !important;
+    font-style: italic;
+    opacity: 1;
+}
+
+.chat-submit input.form-control.key3::placeholder {
+    color: rgba(var(--key3-font-color), 0.7) !important;
+    font-style: italic;
+    opacity: 1;
+}
+
+.chat-submit input.form-control.key4::placeholder {
+    color: rgba(var(--key4-font-color), 0.7) !important;
+    font-style: italic;
+    opacity: 1;
+}
+
+.username,
+.nav-text {
+    font-weight: bold;
+    font-family: "DM Sans";
+}
+
+.crypto-effect {
+    font-family: monospace;
+}
+
+.crypto-effect-sometimes {
+    margin-right: -15px;
+    letter-spacing: 15px;
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1.5ch;
+}
