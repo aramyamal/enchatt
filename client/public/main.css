@@ -1,0 +1,153 @@
+/* button 57 from a library, updated to fit with our style */
+
+.button-57 {
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    color: rgba(var(--global-background-color));
+    display: inline-block;
+    font-size: 15px;
+    line-height: 15px;
+    padding: 18px 18px 17px;
+    text-decoration: none;
+    cursor: pointer;
+    background: rgba(var(--global-font-color));
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+}
+
+.button-57 span:first-child {
+    position: relative;
+    transition: color 0ms cubic-bezier(0.48, 0, 0.12, 1);
+    z-index: 10;
+    display: inline-block;
+}
+
+.button-57 span:last-child {
+    color: rgba(var(--global-font-color));
+    display: inline-block;
+    position: absolute;
+    font-size: 16px;
+    bottom: 0;
+    z-index: 100;
+    opacity: 0;
+    top: 66%;
+    left: 50%;
+    transform: translateY(225%) translateX(-50%);
+}
+
+.button-57:after {
+    content: "";
+    color: rgba(var(--global-font-color));
+    position: absolute;
+    bottom: -50%;
+    left: -10%;
+    width: 200%;
+    height: 200%;
+    background: rgb(197, 185, 162);
+    transform-origin: bottom center;
+    transition: transform 0ms cubic-bezier(0.48, 0, 0.12, 1);
+    transform: skewY(9.3deg) scaleY(0);
+    z-index: 50;
+}
+
+.button-57:hover:after {
+    transform-origin: bottom center;
+    transform: skewY(9.3deg) scaleY(2);
+}
+
+.button-57:hover span:last-child {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 1;
+    transition: all 0ms cubic-bezier(0.48, 0, 0.12, 1);
+}
+
+/* fetched the css for bootstraps form control, updated to fit with our style instead. */
+
+.form-control {
+    background: rgba(var(--global-font-color), 0.05);
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: rgba(var(--global-font-color));
+    background-clip: padding-box;
+    border: 1px solid rgba(var(--global-font-color), 0.1);
+    border-radius: 0.375rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-floating>.form-control {
+    margin-bottom: 20px;
+}
+
+.form-control:focus {
+    color: rgba(var(--global-font-color));
+    background-color: rgba(var(--global-font-color), 0.05);
+    border-color: rgba(var(--global-font-color), 0.1);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(var(--global-font-color), 0, 2);
+}
+
+.form-floating {
+    width: 300px;
+    position: relative;
+}
+
+.form-floating>.form-control:focus~label,
+.form-floating>.form-control:not(:placeholder-shown)~label {
+    opacity: 0.3;
+    transform: scale(0.8) translateY(-0.5rem) translateX(0.15rem);
+    transition: border-color 1s ease-in-out, box-shadow 1s ease-in-out;
+}
+
+.form-floating>.form-control:focus~label {
+    background-color: transparent;
+    color: rgba(var(--global-font-color));
+}
+
+
+/* bootstrap dropdown button css, modified to fit our style */
+
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    background-color: rgba(var(--global-font-color), 0.2);
+    border: 0px solid #ced4da;
+    /* Border for the dropdown */
+    border-radius: 5px;
+    /* Rounded corners for the dropdown menu */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Add shadow for depth */
+}
+
+/* Dropdown menu items */
+.dropdown-item {
+    color: rgba(var(--global-font-color));
+    padding: 10px 20px;
+    /* Adjust padding */
+    font-size: 14px;
+    /* Font size for items */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(var(--global-font-color));
+    /* Highlight background on hover */
+    color: rgba(var(--global-background-color), 0.8);
+    /* Highlight text color */
+}
+
+label,
+.button-57 .text {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: bold;
+}
+
+label {
+    color: rgba(var(--global-font-color));
+}
