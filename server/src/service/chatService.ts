@@ -7,7 +7,7 @@ export class ChatService {
     private getChat(key: string): Chat {
         const chat = this.chats.get(key);
         if (!chat) {
-           throw new Error(`Chat with key ${key} not found.`);
+            throw new Error(`Chat with key ${key} not found.`);
         }
         return chat;
     }
@@ -20,18 +20,19 @@ export class ChatService {
         return structuredClone(this.getChat(key));
     }
 
-    async sendMessage(key: string, sender: string, content: string): Promise<boolean> {
+    async sendMessage(key: string, sender: string, content: string): Promise<void> {
+        if (!content.trim()) { //remove trailing white space and check if resulting is empty
+            throw new Error("Message content empty.")
+        }
+
+        const chat = this.getChat(key);
+
         const message: Message = {
             sender: sender,
             time: Date.now(),
             content: content
         };
 
-        const chat: Chat | undefined = this.chats.get(key);
-        if (!chat) {
-            return false;
-        }
         chat.messages.push(message);
-        return true;
     }
 }
