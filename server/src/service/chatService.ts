@@ -4,6 +4,7 @@ import { Message } from "../model/message.interface";
 export class ChatService {
     private chats: Map<string, Chat> = new Map(); //replace with database
 
+    // should this be async?
     private getChat(key: string): Chat {
         const chat = this.chats.get(key);
         if (!chat) {
@@ -20,12 +21,12 @@ export class ChatService {
         return structuredClone(this.getChat(key));
     }
 
-    async sendMessage(key: string, sender: string, content: string): Promise<void> {
+    async sendMessage(key: string, sender: string, content: string): Promise<Message> {
         if (!content.trim()) { //remove trailing white space and check if resulting is empty
             throw new Error("Message content empty.")
         }
 
-        const chat = this.getChat(key);
+        const chat: Chat = this.getChat(key);
 
         const message: Message = {
             sender: sender,
@@ -34,5 +35,6 @@ export class ChatService {
         };
 
         chat.messages.push(message);
+        return message;
     }
 }
