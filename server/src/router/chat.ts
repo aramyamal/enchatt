@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { ChatService } from "../service/chatService";
+import { ChatService } from "../service/chat";
 import { Chat } from "../model/chat.interface";
 import { Message } from "../model/message.interface";
 
@@ -35,6 +35,3 @@ chatRouter.post("/chat/", async (
     }
 }
 );
-
-
-
