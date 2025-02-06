@@ -28,8 +28,8 @@ chatRouter.post("/chat/", async (
         const key: string = req.body.key;
         const sender: string = req.body.sender;
         const content: string = req.body.content;
-        const message: Message = await chatService.sendMessage(key, sender, content);
-        res.status(201).send(message);
+        const message: Promise<Message> = chatService.sendMessage(key, sender, content);
+        res.status(201).send(await message);
     } catch (e: any) {
         res.status(500).send(e.message);
     }
