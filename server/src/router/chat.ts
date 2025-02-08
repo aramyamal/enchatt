@@ -13,7 +13,7 @@ chatRouter.get("/chat/:key", async (
 ) => {
     try {
         const { key } = req.params;
-        let chat = await chatService.createOrGetChat(key);
+        const chat: Chat = await chatService.getOrCreateChat(key);
         res.status(200).send(chat);
     } catch (e: any) {
         res.status(500).send(e.message);
