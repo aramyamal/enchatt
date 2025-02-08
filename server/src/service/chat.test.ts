@@ -58,3 +58,23 @@ test("creating a Chat should return a deep copy of that chat", async () => {
     expect(retrievedChat.messages).toEqual([]);
     expect(retrievedChat.messages).toHaveLength(0);
 })
+
+test("sending a message to a Chat should create a Message and add it to the "
+    + "corresponding Chat", async () => {
+        const testKey: string = crypto.randomBytes(crypto.randomInt(32))
+            .toString("ascii");
+
+        chatService.getOrCreateChat(testKey);
+        let message: Message = await chatService
+            .sendMessage(testKey, "sender", "test content.")
+
+        expect((await chatService.getOrCreateChat(testKey)).messages)
+            .toContainEqual(message)
+    })
+
+test("sending a message to an uninitialized chat should throw an error", async () => {
+    const testKey: string = crypto.randomBytes(crypto.randomInt(32))
+        .toString("ascii");
+
+
+})
