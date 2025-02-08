@@ -20,9 +20,9 @@ export class ChatService {
     }
 
     /**
-    * Get chat for a key, if no chat exists with that key, create chat for that 
-    * key instead
-    * @returns Deep copy that chat
+    * Get chat associated with input key, if no chat exists with for that key, 
+    * create a new chat for it instead
+    * @returns Deep copy of chat associated with input key
     */
     async getOrCreateChat(key: string): Promise<Chat> {
         if (!this.chats.has(key)) {
@@ -31,6 +31,11 @@ export class ChatService {
         return structuredClone(this.getChat(key));
     }
 
+    /**
+    * Sends a message to a chat associated with input key
+    * @returns The created Message object
+    * @throws {Error} if message content is empty after whitespace removal
+    */
     async sendMessage(key: string, sender: string, content: string): Promise<Message> {
         if (!content.trim()) { //remove trailing white space and check if resulting is empty
             throw new Error("Message content empty.")
