@@ -16,8 +16,8 @@ test("getting a Chat should return a deep copy of that chat", async () => {
     const testKey: string = crypto.randomBytes(crypto.randomInt(32))
         .toString("ascii");
 
-    const newChat: Chat = await chatService.getOrCreateChat(testKey);
-    const sameChat: Chat = await chatService.getOrCreateChat(testKey);
+    const newChat: Chat = await chatService.getOrCreateChat(testKey); // create
+    const sameChat: Chat = await chatService.getOrCreateChat(testKey); // get
 
     // ensure initial retrieved chats with same keys are distinct but equal
     expect(newChat).not.toBe(sameChat);
@@ -66,15 +66,42 @@ test("sending a message to a Chat should create a Message and add it to the "
 
         chatService.getOrCreateChat(testKey);
         let message: Message = await chatService
-            .sendMessage(testKey, "sender", "test content.")
+            .sendMessage(testKey, "sender", "test content.");
 
         expect((await chatService.getOrCreateChat(testKey)).messages)
-            .toContainEqual(message)
-    })
+            .toContainEqual(message);
+    }
+)
 
-test("sending a message to an uninitialized chat should throw an error", async () => {
+test("sending a message to an uninitialized chat should throw an error",
+    async () => {
+        const testKey: string = crypto.randomBytes(crypto.randomInt(32))
+            .toString("ascii");
+
+        await expect(chatService.sendMessage(testKey, "sender", "test content."))
+            .rejects
+            .toThrow();
+    }
+)
+
+test("sending an empty message should throw an error", async () => {
     const testKey: string = crypto.randomBytes(crypto.randomInt(32))
         .toString("ascii");
 
+    await chatService.getOrCreateChat(testKey);
 
+    await expect(chatService.sendMessage(testKey, "sender", ""))
+        .rejects
+        .toThrow();
+})
+
+test("sending a message with only whitespace should throw error", async () => {
+    const testKey: string = crypto.randomBytes(crypto.randomInt(32))
+        .toString("ascii");
+
+    await chatService.getOrCreateChat(testKey);
+
+    await expect(chatService.sendMessage(testKey, "sender", "    \t   \n \n  "))
+        .rejects
+        .toThrow();
 })
