@@ -22,8 +22,8 @@ test("getting a Chat should return a deep copy of that chat", async () => {
     expect(newChat).not.toBe(sameChat);
     expect(newChat).toEqual(sameChat);
 
-    // modify the first copy
-    newChat.messages.push({
+    // modify the get copy
+    sameChat.messages.push({
         sender: "testSender",
         time: 0,
         content: "test message."
@@ -34,7 +34,6 @@ test("getting a Chat should return a deep copy of that chat", async () => {
 
     // verify that the stored chat is not affected by the modificiation
     expect(thirdChat.messages).toEqual([]);
-    expect(thirdChat).toEqual(sameChat);
 })
 
 test("creating a Chat should return a deep copy of that chat", async () => {
@@ -52,7 +51,6 @@ test("creating a Chat should return a deep copy of that chat", async () => {
 
     // check that the modificiation is not present in the retrieved chat
     expect(retrievedChat.messages).toEqual([]);
-    expect(retrievedChat.messages).toHaveLength(0);
 })
 
 test("sending a message to a Chat should create a Message and add it to the "
