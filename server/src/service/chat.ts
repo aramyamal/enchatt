@@ -13,15 +13,20 @@ export class ChatService {
         return chat;
     }
 
+    private createChat(key: string): Chat {
+        const newChat: Chat = { messages: [] };
+        this.chats.set(key, newChat);
+        return newChat;
+    }
+
     /**
     * Get chat for a key, if no chat exists with that key, create chat for that 
     * key instead
     * @returns Deep copy that chat
     */
-    async createOrGetChat(key: string): Promise<Chat> {
+    async getOrCreateChat(key: string): Promise<Chat> {
         if (!this.chats.has(key)) {
-            const newChat: Chat = { messages: [] };
-            this.chats.set(key, newChat);
+            this.createChat(key);
         }
         return structuredClone(this.getChat(key));
     }
