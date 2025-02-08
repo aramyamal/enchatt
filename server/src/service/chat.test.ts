@@ -4,8 +4,10 @@ import { ChatService } from "./chat";
 import crypto from "crypto";
 
 let chatService: ChatService;
+let testKey: string;
 beforeEach(() => {
     chatService = new ChatService();
+    testKey = crypto.randomBytes(crypto.randomInt(32) + 1).toString("ascii");
 })
 
 // possibly split this into "getting a Chat should return distinct but equal
@@ -13,9 +15,6 @@ beforeEach(() => {
 // are needed to test if getting a chat returns a deep copy, hence the 
 // combination of them here:
 test("getting a Chat should return a deep copy of that chat", async () => {
-    const testKey: string = crypto.randomBytes(crypto.randomInt(32))
-        .toString("ascii");
-
     const newChat: Chat = await chatService.getOrCreateChat(testKey); // create
     const sameChat: Chat = await chatService.getOrCreateChat(testKey); // get
 
@@ -39,9 +38,6 @@ test("getting a Chat should return a deep copy of that chat", async () => {
 })
 
 test("creating a Chat should return a deep copy of that chat", async () => {
-
-    const testKey: string = crypto.randomBytes(crypto.randomInt(32))
-        .toString("ascii");
     const newChat: Chat = await chatService.getOrCreateChat(testKey);
 
     // modify the newly created chat
@@ -75,19 +71,13 @@ test("sending a message to a Chat should create a Message and add it to the "
 
 test("sending a message to an uninitialized chat should throw an error",
     async () => {
-        const testKey: string = crypto.randomBytes(crypto.randomInt(32))
-            .toString("ascii");
-
-        await expect(chatService.sendMessage(testKey, "sender", "test content."))
+        await expect(chatService.sendMessage(testKey, "sender", "test content"))
             .rejects
             .toThrow();
     }
 )
 
 test("sending an empty message should throw an error", async () => {
-    const testKey: string = crypto.randomBytes(crypto.randomInt(32))
-        .toString("ascii");
-
     await chatService.getOrCreateChat(testKey);
 
     await expect(chatService.sendMessage(testKey, "sender", ""))
@@ -96,9 +86,6 @@ test("sending an empty message should throw an error", async () => {
 })
 
 test("sending a message with only whitespace should throw error", async () => {
-    const testKey: string = crypto.randomBytes(crypto.randomInt(32))
-        .toString("ascii");
-
     await chatService.getOrCreateChat(testKey);
 
     await expect(chatService.sendMessage(testKey, "sender", "    \t   \n \n  "))
