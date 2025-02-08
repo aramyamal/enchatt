@@ -13,6 +13,11 @@ export class ChatService {
         return chat;
     }
 
+    /**
+    * Get chat for a key, if no chat exists with that key, create chat for that 
+    * key instead
+    * @returns Deep copy that chat
+    */
     async createOrGetChat(key: string): Promise<Chat> {
         if (!this.chats.has(key)) {
             const newChat: Chat = { messages: [] };
