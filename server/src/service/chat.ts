@@ -1,3 +1,4 @@
+import { HttpError } from "../errors/HttpError";
 import { Chat } from "../model/chat.interface";
 import { Message } from "../model/message.interface";
 
@@ -8,7 +9,7 @@ export class ChatService {
     private getChat(key: string): Chat {
         const chat = this.chats.get(key);
         if (!chat) {
-            throw new Error(`Chat with key ${key} not found.`);
+            throw new HttpError(404, `Chat with key ${key} not found.`);
         }
         return chat;
     }
@@ -38,7 +39,7 @@ export class ChatService {
     */
     async sendMessage(key: string, sender: string, content: string): Promise<Message> {
         if (!content.trim()) { //remove trailing white space and check if resulting is empty
-            throw new Error("Message content empty.")
+            throw new HttpError(400, "Message content empty.");
         }
 
         const chat: Chat = this.getChat(key);
