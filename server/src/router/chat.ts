@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { ChatService } from "../service/chat";
 import { Chat } from "../model/chat.interface";
 import { Message } from "../model/message.interface";
+import { HttpError } from "../errors/HttpError";
 
 const chatService = new ChatService();
 
@@ -16,7 +17,13 @@ chatRouter.get("/chat/:key", async (
         const chat: Chat = await chatService.getOrCreateChat(key);
         res.status(200).send(chat);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        if (e instanceof HttpError) {
+            res.status(e.statusCode).send(e.message);
+        } else if (e instanceof Error) {
+            res.status(500).send(e.message);
+        } else {
+            res.status(500).send("Unknown error occurred");
+        }
     }
 });
 
@@ -31,7 +38,13 @@ chatRouter.post("/chat/", async (
         const message: Promise<Message> = chatService.sendMessage(key, sender, content);
         res.status(201).send(await message);
     } catch (e: any) {
-        res.status(500).send(e.message);
+        if (e instanceof HttpError) {
+            res.status(e.statusCode).send(e.message);
+        } else if (e instanceof Error) {
+            res.status(500).send(e.message);
+        } else {
+            res.status(500).send("Unknown error occurred");
+        }
     }
 }
 );
