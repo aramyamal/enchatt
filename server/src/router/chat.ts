@@ -27,12 +27,12 @@ chatRouter.get("/chat/:key", async (
     }
 });
 
-chatRouter.post("/chat/", async (
-    req: Request<{}, {}, { key: string, sender: string, content: string }>,
+chatRouter.post("/chat/:key", async (
+    req: Request<{key: string}, {}, { sender: string, content: string }>,
     res: Response<Message | string>
 ) => {
     try {
-        const key: string = req.body.key;
+        const {key} = req.params;
         const sender: string = req.body.sender;
         const content: string = req.body.content;
         const message: Promise<Message> = chatService.sendMessage(key, sender, content);
@@ -48,3 +48,29 @@ chatRouter.post("/chat/", async (
     }
 }
 );
+
+chatRouter.get("/chats", async (
+    req: Request<{}, {}, {}, { key1?: string, key2?: string }>, 
+    res: Response<Chat[] | string>
+) => {
+    try {
+        const {key1, key2} = req.query;
+        if (!key1 || !key2) {
+            res.status(400).send("Missing key1 or key2.");
+        }
+
+        const chats = await chatService.getOrCreateMultipleChats(key1 as string,key2 as string);
+        
+        res.status(202).send(chats);
+
+    }
+    catch (e: any) {
+        if (e instanceof HttpError) {
+            res.status(e.statusCode).send(e.message);
+        } else if (e instanceof Error) {
+            res.status(500).send(e.message);
+        } else {
+            res.status(500).send("Unknown error occurred");
+        }
+    }
+});
