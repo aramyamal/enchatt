@@ -3,28 +3,43 @@ import InputGroup from "react-bootstrap/InputGroup";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useState } from "react";
+import { Message, createMessage } from "../../api";
 
 export const ChatSubmit: React.FC = () => {
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
     const keyMap: Map<string, string> = new Map([
-        ["Key 1", "key1"],
+        ["testkey", "key1"],
         ["Key 2", "key2"],
         ["Key 3", "key3"],
         ["Key 4", "key4"]
     ]);
+
     const handleSelect = (eventKey: string | null) => {
         if (eventKey) {
             setSelectedKey(eventKey);
         }
         return;
-
     };
 
+    const [newMessage, setNewMessage] = useState<string>("");
+
+    async function sendMessage(content: string, key: string) {
+        try {
+            createMessage("browser_user", content, key);
+        } catch (error) {
+            console.error("Failed to send chat to key ", key);
+        }
+    }
 
     return (
         <div className="">
             <InputGroup className="">
-                <Form.Control placeholder={`Enter message for ${selectedKey}...`} aria-label="Key select" />
+                <Form.Control onChange={(text) => {
+                    setNewMessage(text.target.value);
+                }}
+                    onKeyDown={() => { sendMessage(newMessage, selectedKey) }}
+                    placeholder={`Enter message for ${selectedKey}...`} aria-label="Key select" />
+
 
                 <Dropdown onSelect={handleSelect}>
                     <Dropdown.Toggle className="bg-transparent border-0">
