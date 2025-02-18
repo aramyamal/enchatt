@@ -31,9 +31,6 @@ export const ChatBox: React.FC = () => {
             {chat && chat.messages.map((message) => (
                 MessageComponent({ message })
             ))}
-            // <Button variant="" onClick={() => { loadChats("testkey"); }}>
-            //     test
-            // </Button>
         </>
     )
 }
