@@ -2,6 +2,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
+import Button from "react-bootstrap/esm/Button";
 
 export const ChatSubmit: React.FC = () => {
     return (
@@ -33,6 +34,9 @@ export const ChatSubmit: React.FC = () => {
 
                 <InputGroup.Text className="key4">⊛</InputGroup.Text>
                 <Form.Control className="key4" placeholder="Key 4" aria-label="Key 4" />
+                <Button variant="" onClick={() => { loadChats("testkey"); }}>
+                    test
+                </Button>
             </InputGroup>
         </div>
     )
