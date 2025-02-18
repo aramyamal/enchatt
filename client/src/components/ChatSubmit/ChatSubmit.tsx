@@ -2,25 +2,50 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import Button from "react-bootstrap/esm/Button";
+import { useState } from "react";
 
 export const ChatSubmit: React.FC = () => {
+    const [selectedKey, setSelectedKey] = useState<string>("Key 1");
+    const keyMap: Map<string, string> = new Map([
+        ["Key 1", "key1"],
+        ["Key 2", "key2"],
+        ["Key 3", "key3"],
+        ["Key 4", "key4"]
+    ]);
+    const handleSelect = (eventKey: string | null) => {
+        if (eventKey) {
+            setSelectedKey(eventKey);
+        }
+        return;
+
+    };
+
+
     return (
         <div className="">
             <InputGroup className="">
-                <Form.Control aria-label="Key select" />
+                <Form.Control placeholder={`Enter message for ${selectedKey}...`} aria-label="Key select" />
 
-                <DropdownButton
-                    variant="outline-secondary"
-                    title="Dropdown"
-                    id="input-group-dropdown-2"
-                    align="end"
-                >
-                    <Dropdown.Item href="#">Key 1</Dropdown.Item>
-                    <Dropdown.Item href="#">Key 2</Dropdown.Item>
-                    <Dropdown.Item href="#">Key 3</Dropdown.Item>
-                    <Dropdown.Item href="#">Key 4</Dropdown.Item>
-                </DropdownButton>
+                <Dropdown onSelect={handleSelect}>
+                    <Dropdown.Toggle className="bg-transparent border-0">
+                        {selectedKey}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu className={`
+                        bg-transparent border-0 shadow-lg
+                    `}>
+                        {[...keyMap.keys()].map((name) => (
+                            <Dropdown.Item
+                                key={name}
+                                eventKey={name}
+                                data-value={keyMap.get(name)}
+                            >
+                                {name}
+                            </Dropdown.Item>
+                        ))}
+                    </Dropdown.Menu>
+                </Dropdown>
+
             </InputGroup>
             <InputGroup>
                 <InputGroup.Text>⊛</InputGroup.Text>
@@ -34,9 +59,6 @@ export const ChatSubmit: React.FC = () => {
 
                 <InputGroup.Text className="key4">⊛</InputGroup.Text>
                 <Form.Control className="key4" placeholder="Key 4" aria-label="Key 4" />
-                <Button variant="" onClick={() => { loadChats("testkey"); }}>
-                    test
-                </Button>
             </InputGroup>
         </div>
     )
