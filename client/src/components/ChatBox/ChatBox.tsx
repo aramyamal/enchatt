@@ -1,11 +1,9 @@
-import { Button } from "react-bootstrap";
-import classes from "./ChatBox.module.css";
-import Card from "react-bootstrap/Card";
 import { Chat, getChat } from "../../api";
 import { useState, useEffect } from "react";
 import { MessageComponent } from "../Message/Message";
 
-export const ChatBox: React.FC = () => {
+export function ChatBox(props: { activeKey: string }) {
+    const { activeKey } = props;
 
     const [chat, setChat] = useState<Chat>({ messages: [] });
 
@@ -20,11 +18,11 @@ export const ChatBox: React.FC = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            loadChats("testkey");
-        }, 3000); // Call every 3 seconds
+            loadChats(activeKey);
+        }, 3000); // call every 3 seconds
 
-        return () => clearInterval(interval); // Cleanup on unmount
-    }, []); // Empty dependency array ensures this runs once on mount
+        return () => clearInterval(interval); 
+    }, [activeKey]); // activeKey as dependency
 
     return (
         <>

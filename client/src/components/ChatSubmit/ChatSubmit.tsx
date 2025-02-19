@@ -5,7 +5,10 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { useState } from "react";
 import { Message, createMessage } from "../../api";
 
-export const ChatSubmit: React.FC = () => {
+export function ChatSubmit(
+    { onKeyChange }: { onKeyChange: (keyName: string, value: string) => void }
+) {
+
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
     const [newMessage, setNewMessage] = useState<string>("");
     const [keyValues, setKeyValues] = useState<Map<string, string>>(new Map([
@@ -17,6 +20,7 @@ export const ChatSubmit: React.FC = () => {
 
     const handleKeyChange = (keyName: string, value: string) => {
         setKeyValues(new Map(keyValues.set(keyName, value)));
+        onKeyChange(keyName, value);
     };
 
     const handleSelect = (eventKey: string | null) => {

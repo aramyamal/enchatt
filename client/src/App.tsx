@@ -13,6 +13,14 @@ import { ChatSubmit } from './components/ChatSubmit/ChatSubmit';
 import { TopBar } from "./components/TopBar/TopBar";
 
 function App() {
+    const [key1Value, setKey1Value] = useState("");
+
+    const handleKeyChange = (keyName: string, value: string) => {
+        if (keyName === "Key 1") {
+            setKey1Value(value);
+        }
+    };
+
     return (
         <Container fluid="xxl" className="d-flex flex-column min-vh-100">
             <TopBar />
@@ -21,10 +29,10 @@ function App() {
 
                 <Col md={6} className="">
                     <div className="">
-                        <ChatBox />
+                        <ChatBox activeKey = {key1Value}/>
                     </div>
                     <div className="">
-                        <ChatSubmit />
+                        <ChatSubmit onKeyChange= {handleKeyChange} />
                     </div>
                 </Col>
 
