@@ -7,12 +7,17 @@ import { Message, createMessage } from "../../api";
 
 export const ChatSubmit: React.FC = () => {
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
-    const keyMap: Map<string, string> = new Map([
-        ["testkey", "key1"],
-        ["Key 2", "key2"],
-        ["Key 3", "key3"],
-        ["Key 4", "key4"]
-    ]);
+    const [newMessage, setNewMessage] = useState<string>("");
+    const [keyValues, setKeyValues] = useState<Map<string, string>>(new Map([
+        ["Key 1", ""],
+        ["Key 2", ""],
+        ["Key 3", ""],
+        ["Key 4", ""]
+    ]));
+
+    const handleKeyChange = (keyName: string, value: string) => {
+        setKeyValues(new Map(keyValues.set(keyName, value)));
+    };
 
     const handleSelect = (eventKey: string | null) => {
         if (eventKey) {
@@ -21,7 +26,12 @@ export const ChatSubmit: React.FC = () => {
         return;
     };
 
-    const [newMessage, setNewMessage] = useState<string>("");
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            const keyValue = keyValues.get(selectedKey) || '';
+            sendMessage(newMessage, keyValue);
+        }
+    };
 
     async function sendMessage(content: string, key: string) {
         try {
@@ -34,46 +44,46 @@ export const ChatSubmit: React.FC = () => {
     return (
         <div className="">
             <InputGroup className="">
-                <Form.Control onChange={(text) => {
-                    setNewMessage(text.target.value);
-                }}
-                    onKeyDown={() => { sendMessage(newMessage, selectedKey) }}
-                    placeholder={`Enter message for ${selectedKey}...`} aria-label="Key select" />
-
+                <Form.Control
+                    onChange={(e) => { setNewMessage(e.target.value); }}
+                    onKeyDown={handleKeyDown}
+                    placeholder={`Enter message for ${selectedKey}...`}
+                    aria-label="Key select"
+                />
 
                 <Dropdown onSelect={handleSelect}>
-                    <Dropdown.Toggle className="bg-transparent border-0">
+                    <Dropdown.Toggle className="">
                         {selectedKey}
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu className={`
-                        bg-transparent border-0 shadow-lg
-                    `}>
-                        {[...keyMap.keys()].map((name) => (
+                    <Dropdown.Menu className="">
+                        {[...keyValues.keys()].map((name) => (
                             <Dropdown.Item
                                 key={name}
                                 eventKey={name}
-                                data-value={keyMap.get(name)}
                             >
                                 {name}
                             </Dropdown.Item>
                         ))}
                     </Dropdown.Menu>
                 </Dropdown>
-
             </InputGroup>
+
             <InputGroup>
-                <InputGroup.Text>⊛</InputGroup.Text>
-                <Form.Control placeholder="Key 1" aria-label="Key 1" />
-
-                <InputGroup.Text className="key2">⊛</InputGroup.Text>
-                <Form.Control className="key2" placeholder="Key 2" aria-label="Key 2" />
-
-                <InputGroup.Text className="key3">⊛</InputGroup.Text>
-                <Form.Control className="key3" placeholder="Key 3" aria-label="Key 3" />
-
-                <InputGroup.Text className="key4">⊛</InputGroup.Text>
-                <Form.Control className="key4" placeholder="Key 4" aria-label="Key 4" />
+                {[1, 2, 3, 4].map((nr) => (
+                    <>
+                        <InputGroup.Text className="">⊛</InputGroup.Text>
+                        <Form.Control
+                            placeholder={`Key ${nr}`}
+                            aria-label={`Key ${nr}`}
+                            onChange={
+                                (e) =>
+                                    handleKeyChange(`Key ${nr}`, e.target.value)
+                            }
+                            value={keyValues.get(`Key ${nr}`)}
+                        />
+                    </>
+                ))}
             </InputGroup>
         </div>
     )
