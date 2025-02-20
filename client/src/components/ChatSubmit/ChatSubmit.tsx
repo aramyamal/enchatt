@@ -2,11 +2,12 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import { useState } from "react";
+import { useState} from "react";
 import { Message, createMessage } from "../../api";
+import React from "react";
 
 export function ChatSubmit(
-    { onKeyChange }: { onKeyChange: (keyName: string, value: string) => void }
+    { onKeyChange }: { onKeyChange: (activeKeys : string[]) => void }
 ) {
 
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
@@ -19,8 +20,18 @@ export function ChatSubmit(
     ]));
 
     const handleKeyChange = (keyName: string, value: string) => {
-        setKeyValues(new Map(keyValues.set(keyName, value)));
-        onKeyChange(keyName, value);
+        const updatedKeyValues = new Map(keyValues);
+        updatedKeyValues.set(keyName, value);
+        setKeyValues(updatedKeyValues);
+    
+        // retrieve the keys which are active
+        const activeKeys = Array.from(updatedKeyValues.entries())
+        // only keep non-empty values
+            .filter(([_, v]) => v !== "") 
+            // Extract values from keyValues
+            .map(([_, v]) => v); 
+        // send updated keys to App.tsx
+        onKeyChange(activeKeys);
     };
 
     const handleSelect = (eventKey: string | null) => {
@@ -75,18 +86,15 @@ export function ChatSubmit(
 
             <InputGroup>
                 {[1, 2, 3, 4].map((nr) => (
-                    <>
-                        <InputGroup.Text className="">⊛</InputGroup.Text>
+                    <React.Fragment key={nr}>
+                        <InputGroup.Text>⊛</InputGroup.Text>
                         <Form.Control
                             placeholder={`Key ${nr}`}
                             aria-label={`Key ${nr}`}
-                            onChange={
-                                (e) =>
-                                    handleKeyChange(`Key ${nr}`, e.target.value)
-                            }
-                            value={keyValues.get(`Key ${nr}`)}
+                            onChange={(e) => handleKeyChange(`Key ${nr}`, e.currentTarget.value)}
+                            value={keyValues.get(`Key ${nr}`) || ""}
                         />
-                    </>
+                    </React.Fragment>
                 ))}
             </InputGroup>
         </div>

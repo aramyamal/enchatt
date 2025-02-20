@@ -53,4 +53,18 @@ export class ChatService {
         chat.messages.push(message);
         return message;
     }
+
+    async getOrCreateMultipleChats1(keys : string[]): Promise<Chat[]>{
+        const multipleChats : Chat[] = []
+
+        keys.forEach((key) => {
+            if (!this.chats.has(key)) {
+                this.createChat(key)
+            }
+            multipleChats.push(this.getChat(key))
+        })
+
+        return structuredClone(multipleChats);
+    }
+
 }

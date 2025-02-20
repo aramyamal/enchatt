@@ -13,12 +13,9 @@ import { ChatSubmit } from './components/ChatSubmit/ChatSubmit';
 import { TopBar } from "./components/TopBar/TopBar";
 
 function App() {
-    const [key1Value, setKey1Value] = useState("");
-
-    const handleKeyChange = (keyName: string, value: string) => {
-        if (keyName === "Key 1") {
-            setKey1Value(value);
-        }
+    const [keyValues, setKeyValues] = useState<string[]>([]);
+    const handleKeyChange = (activeKeys : string[]) => {
+        setKeyValues(activeKeys)
     };
 
     return (
@@ -29,7 +26,7 @@ function App() {
 
                 <Col md={6} className="">
                     <div className="">
-                        <ChatBox activeKey = {key1Value}/>
+                        <ChatBox activeKeys = {keyValues}/>
                     </div>
                     <div className="">
                         <ChatSubmit onKeyChange= {handleKeyChange} />
