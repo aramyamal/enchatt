@@ -15,12 +15,17 @@ export type Message = {
 // TODO: change for finished product
 const BASE_URL = "http://localhost:8080";
 
-export async function getMultipleChats(keys: string[]): Promise<Chat[]> {
-    const chatPromises = keys.map(key =>
-        axios.get<Chat>(`${BASE_URL}/chat/${key}`).then(res => res.data)
-    );
+export async function getMultipleChats(keys: string[]): Promise<Chat> {
+    const chatPromises = axios.get<Chat>(`${BASE_URL}/chats/` , {
+            params : {
+                key1 : keys[0],
+                key2 : keys[1],
+                key3 : keys[2],
+                key4 : keys[3]
+            }
+        }).then(res => res.data);
 
-    return await Promise.all(chatPromises); // ✅ Waits for all chats to resolve
+    return await chatPromises;
 }
 
 export async function createMessage(sender: string,

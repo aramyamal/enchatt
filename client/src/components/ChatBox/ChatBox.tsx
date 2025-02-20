@@ -8,25 +8,19 @@ export function ChatBox(props: { activeKeys: string[] }) {
     const [chat, setChat] = useState<Chat>({ messages: [] });
 
 
-    async function loadChatsss(keys : string[]) {
-        const multipleChats : Chat[] = await getMultipleChats(keys);
-        const theChatttt : Message[] = [];
+    async function loadChats(keys : string[]) {
+        const multipleChats : Chat = await getMultipleChats(keys);
 
-        multipleChats.forEach((chat) => {
-            theChatttt.push(...chat.messages)
-        })
-        setChat({messages : theChatttt})
+        setChat({messages : multipleChats.messages})
     }
 
     useEffect(() => {
         const interval = setInterval(() => {
-            if (activeKey.trim() != "") {
-                loadChats(activeKey);
-            }
+                loadChats(activeKeys);
         }, 3000); // call every 3 seconds
 
         return () => clearInterval(interval);
-    }, [activeKey]); // activeKey as dependency
+    }, [activeKeys]); // activeKey as dependency
 
     return (
         <>
