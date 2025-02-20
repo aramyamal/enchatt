@@ -20,11 +20,13 @@ export function ChatBox(props: { activeKeys: string[] }) {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            loadChatsss(activeKeys);
+            if (activeKey.trim() != "") {
+                loadChats(activeKey);
+            }
         }, 3000); // call every 3 seconds
 
-        return () => clearInterval(interval); 
-    }, [activeKeys]); // activeKey as dependency
+        return () => clearInterval(interval);
+    }, [activeKey]); // activeKey as dependency
 
     return (
         <>

@@ -26,10 +26,9 @@ export async function getMultipleChats(keys: string[]): Promise<Chat[]> {
 export async function createMessage(sender: string,
     content: string, key: string): Promise<Message> {
     const message = {
-        key: key,
         sender: sender,
         content: content
     };
-    const response = await axios.post<Message>(`${BASE_URL}/chat/`, message);
+    const response = await axios.post<Message>(`${BASE_URL}/chat/${key}`, message);
     return response.data;
 }   
