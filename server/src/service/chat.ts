@@ -4,6 +4,7 @@ import { Message } from "../model/message.interface";
 
 export class ChatService {
     private chats: Map<string, Chat> = new Map(); //replace with database
+    private multipleChats: Map<string , Chat> = new Map();
 
     // should this be async?
     private getChat(key: string): Chat {
@@ -52,5 +53,18 @@ export class ChatService {
 
         chat.messages.push(message);
         return message;
+    }
+
+    async getOrCreateMultipleChats(key1: string, key2: string): Promise<Chat[]>{
+        if(!this.chats.has(key1)) {
+            const newChat: Chat = this.createChat(key1)
+            this.multipleChats.set(key1, newChat)
+        }
+        if(!this.chats.has(key2)){
+            const new2Chat: Chat = this.createChat(key2)
+            this.multipleChats.set(key2, new2Chat)
+        }
+        
+        return [this.multipleChats.get(key1)!,this.multipleChats.get(key2)! ];
     }
 }
