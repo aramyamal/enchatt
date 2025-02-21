@@ -1,4 +1,3 @@
-import Card from "react-bootstrap/esm/Card";
 import { Message } from "../../api";
 
 export function MessageComponent({ message }: { message: Message }) {

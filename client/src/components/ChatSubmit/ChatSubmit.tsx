@@ -1,9 +1,8 @@
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useState} from "react";
-import { Message, createMessage } from "../../api";
+import { createMessage } from "../../api";
 import React from "react";
 
 export function ChatSubmit(
