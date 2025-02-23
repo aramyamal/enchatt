@@ -28,20 +28,15 @@ describe('Integration test', () => {
     it('Should update selected key when it changes in dropdown list', async () => {
         const { container } = render(<ChatSubmit onKeyChange={() => {}} />);
         
-        // Find dropdown toggle using DOM query
         const dropdownToggle = container.querySelector('.dropdown-toggle.btn.btn-primary');
         if (!dropdownToggle) throw new Error('Dropdown toggle not found');
         
-        // Open dropdown
         fireEvent.click(dropdownToggle);
         
-        // Find Key 2 menu item using text match
         const key2Item = screen.getByRole('button', { name: /^Key 2$/i });
         
-        // Select Key 2
         fireEvent.click(key2Item);
         
-        // Verify updated toggle text
         const updatedToggle = container.querySelector('.dropdown-toggle.btn.btn-primary');
         expect(updatedToggle?.textContent).toMatch(/Key 2/i);
     });
