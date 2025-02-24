@@ -45,3 +45,11 @@
     font-display: swap;
     src: url("LibreBaskerville-Bold.ttf");
 }
+
+@font-face {
+    font-family: "Fira Code";
+    font-style: normal;
+    font-weight: normal;
+    font-display: swap;
+    src: url("FiraCode-Regular.ttf");
+}
