@@ -19,9 +19,9 @@
     --transition-duration: 0.3s;
 
 
-    --key2-color-rgb: 140, 179, 105;
-    --key3-color-rgb: 91, 142, 125;
-    --key4-color-rgb: 188, 75, 81;
+    --key2-color-rgb: 196, 120, 140;
+    --key3-color-rgb: 140, 179, 105;
+    --key4-color-rgb: 109, 159, 145;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -43,7 +43,7 @@ body {
 }
 
 .font-mono {
-    font-family: mono;
+    font-family: "Fira Code", mono;
 }
 
 .font-serif {

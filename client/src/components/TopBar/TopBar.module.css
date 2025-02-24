@@ -1,9 +1,0 @@
-.dropdownToggle::after {
-    display: none !important;
-}
-
-/* Optional: Add hover effect */
-.dropdownToggle:hover {
-    opacity: 0.8;
-    cursor: pointer;
-}

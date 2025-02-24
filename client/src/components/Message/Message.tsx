@@ -1,22 +1,7 @@
-import { Message, KeyString } from "../../api";
+import { Message, getKeyClass} from "../../api";
 import classes from "./Message.module.css";
 
 export function MessageComponent({ message }: { message: Message }) {
-
-    function getKeyClass(keyString: KeyString) {
-        switch (keyString) {
-            case "Key 1":
-                return "key1";
-            case "Key 2":
-                return "key2";
-            case "Key 3":
-                return "key3";
-            case "Key 4":
-                return "key4";
-            default:
-                return;
-        }
-    }
 
     return (
         <>

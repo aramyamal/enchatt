@@ -1,12 +1,17 @@
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
+<<<<<<< HEAD
 import { useState} from "react";
 import {  createMessage } from "../../api";
+=======
+import { useState } from "react";
+import { KeyString, Message, createMessage, getKeyClass } from "../../api";
+>>>>>>> 8464bbf (feat(style): add bootstrap classes to replicate mockup design)
 import React from "react";
 
 export function ChatSubmit(
-    { onKeyChange }: { onKeyChange: (activeKeys : string[]) => void }
+    { onKeyChange }: { onKeyChange: (activeKeys: string[]) => void }
 ) {
 
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
@@ -22,11 +27,11 @@ export function ChatSubmit(
         const updatedKeyValues = new Map(keyValues);
         updatedKeyValues.set(keyName, value);
         setKeyValues(updatedKeyValues);
-    
+
         // retrieve the keys which are active
         const activeKeys = Array.from(updatedKeyValues.entries())
             // Extract values from keyValues
-            .map(([_, v]) => v.trim()); 
+            .map(([_, v]) => v.trim());
         // send updated keys to App.tsx
         onKeyChange(activeKeys);
     };
@@ -54,27 +59,32 @@ export function ChatSubmit(
     }
 
     return (
-        <div className="">
+        <div className="p-2 bg-body-secondary rounded-bottom shadow-lg rounded-4">
             <InputGroup className="">
                 <Form.Control
+                    className={`border-0 bg-transparent my-2 `}
                     onChange={(e) => { setNewMessage(e.target.value); }}
                     onKeyDown={handleKeyDown}
                     placeholder={`Enter message for ${selectedKey}...`}
                     aria-label="Key select"
                 />
 
-                <Dropdown onSelect={handleSelect}>
-                    <Dropdown.Toggle className="">
+                <Dropdown
+                    onSelect={handleSelect}>
+                    <Dropdown.Toggle className={`bg-transparent border-0 
+                        ${getKeyClass(selectedKey as KeyString)}`}
+                    >
                         {selectedKey}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu className="">
-                        {[...keyValues.keys()].map((name) => (
+                        {[...keyValues.keys()].map((key) => (
                             <Dropdown.Item
-                                key={name}
-                                eventKey={name}
+                                className={`${getKeyClass(key as KeyString)}`}
+                                key={key}
+                                eventKey={key}
                             >
-                                {name}
+                                {key}
                             </Dropdown.Item>
                         ))}
                     </Dropdown.Menu>
@@ -84,13 +94,31 @@ export function ChatSubmit(
             <InputGroup>
                 {[1, 2, 3, 4].map((nr) => (
                     <React.Fragment key={nr}>
-                        <InputGroup.Text>⊛</InputGroup.Text>
                         <Form.Control
+                            className={`
+                                ms-2
+                                border-0
+                                form-control-sm
+                                rounded
+                                ${getKeyClass(`Key ${nr}` as KeyString)}
+                            `}
                             placeholder={`Key ${nr}`}
                             aria-label={`Key ${nr}`}
                             onChange={(e) => handleKeyChange(`Key ${nr}`, e.currentTarget.value)}
                             value={keyValues.get(`Key ${nr}`) || ""}
                         />
+                        <InputGroup.Text
+                            className={
+                                `me-2 border-0 bg-transparent 
+                                ${getKeyClass(`Key ${nr}` as KeyString)}
+                            `}
+                        >
+                            {keyValues.get(`Key ${nr}`)?.trim() !== "" ? (
+                                <i className="bi bi-square-fill"></i>
+                            ) : (
+                                <i className="bi bi-square"></i>
+                            )}
+                        </InputGroup.Text>
                     </React.Fragment>
                 ))}
             </InputGroup>
