@@ -40,8 +40,11 @@ export function ChatSubmit(
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
-            const keyValue = keyValues.get(selectedKey) || '';
-            sendMessage(newMessage, keyValue);
+            const keyValue = keyValues.get(selectedKey);
+            if (keyValue) {
+                sendMessage(newMessage, keyValue);
+                setNewMessage("");
+            }
         }
     };
 
@@ -77,11 +80,14 @@ export function ChatSubmit(
         <div className="p-2 bg-body-secondary rounded-bottom shadow-lg rounded-4">
             <InputGroup className="">
                 <Form.Control
-                    className={`border-0 bg-transparent my-2 `}
+                    className={`border-0 bg-transparent my-2 
+                                ${getKeyClass(selectedKey as KeyString)}
+                        `}
                     onChange={(e) => { setNewMessage(e.target.value); }}
                     onKeyDown={handleKeyDown}
                     placeholder={`Enter message for ${selectedKey}...`}
                     aria-label="Key select"
+                    value={newMessage}
                 />
 
                 <Dropdown
