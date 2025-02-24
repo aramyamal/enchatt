@@ -4,7 +4,8 @@ import { getMultipleChats } from "../api";
 
 
 jest.mock("../api", () => ({
-  getMultipleChats: jest.fn()
+  getMultipleChats: jest.fn(),
+  getKeyClass: jest.fn(() => "default-key-class"),
 }));
 
 describe('Chatbox', () => {

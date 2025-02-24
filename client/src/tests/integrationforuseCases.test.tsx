@@ -8,6 +8,7 @@ import { ChatSubmit } from "../components/ChatSubmit/ChatSubmit";
 jest.mock("../api", () => ({
     getMultipleChats: jest.fn(),
     createMessage: jest.fn(),
+    getKeyClass: jest.fn(() => "default-key-class"),
 }));
 
 

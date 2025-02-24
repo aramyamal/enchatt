@@ -1,5 +1,4 @@
 import { Message, getKeyClass} from "../../api";
-import classes from "./Message.module.css";
 
 export function MessageComponent({ message }: { message: Message }) {
 

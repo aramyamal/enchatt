@@ -2,7 +2,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useEffect, useState } from "react";
-import { KeyString, Message, createMessage, getKeyClass } from "../../api";
+import { KeyString, createMessage, getKeyClass } from "../../api";
 import React from "react";
 
 export function ChatSubmit(
