@@ -26,10 +26,8 @@ export function ChatSubmit(
     
         // retrieve the keys which are active
         const activeKeys = Array.from(updatedKeyValues.entries())
-        // only keep non-empty values
-            .filter(([_, v]) => v !== "") 
             // Extract values from keyValues
-            .map(([_, v]) => v); 
+            .map(([_, v]) => v.trim()); 
         // send updated keys to App.tsx
         onKeyChange(activeKeys);
     };
