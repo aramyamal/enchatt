@@ -26,8 +26,10 @@ describe('Chatbox', () => {
         { sender: "test_user2", content: "hello1", time: Date.now() }
       ]
     });
-
-    render(<ChatBox activeKeys={["key1", "key2"]} />);
+    
+    await act(async() =>{
+      render(<ChatBox activeKeys={["key1", "key2"]} />);
+    });
 
     await waitFor(() => {
       expect(getMultipleChats).toHaveBeenCalledWith(["key1", "key2"]);
@@ -38,7 +40,11 @@ describe('Chatbox', () => {
 
   it('Should update messages every 3 seconds', async () => {
     (getMultipleChats as jest.Mock).mockResolvedValueOnce({ messages: [] });
-    render(<ChatBox activeKeys={['key1']} />);
+    
+    await act(async() =>{
+      render(<ChatBox activeKeys={['key1']} />)
+    });
+    
 
     await waitFor(() => {
         expect(screen.queryByTestId('message')).not.toBeInTheDocument();
