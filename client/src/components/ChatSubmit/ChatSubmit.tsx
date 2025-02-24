@@ -1,13 +1,8 @@
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
-<<<<<<< HEAD
-import { useState} from "react";
-import {  createMessage } from "../../api";
-=======
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { KeyString, Message, createMessage, getKeyClass } from "../../api";
->>>>>>> 8464bbf (feat(style): add bootstrap classes to replicate mockup design)
 import React from "react";
 
 export function ChatSubmit(
@@ -57,6 +52,26 @@ export function ChatSubmit(
             console.error("Failed to send chat to key ", key);
         }
     }
+
+    // global keyboard event listener for key switching
+    useEffect(() => {
+        const handleGlobalKeyDown = (e: KeyboardEvent) => {
+            // Check for Ctrl+1, Ctrl+2, etc.
+            if (e.ctrlKey && e.key >= '1' && e.key <= '4') {
+                e.preventDefault(); // Prevent default browser action
+                const keyNumber = parseInt(e.key);
+                const keyName = `Key ${keyNumber}`;
+                setSelectedKey(keyName);
+            }
+        };
+
+        window.addEventListener('keydown', handleGlobalKeyDown);
+
+        // clean up event listener on component unmount
+        return () => {
+            window.removeEventListener('keydown', handleGlobalKeyDown);
+        };
+    }, []);
 
     return (
         <div className="p-2 bg-body-secondary rounded-bottom shadow-lg rounded-4">
