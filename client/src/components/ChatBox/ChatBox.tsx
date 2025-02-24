@@ -1,4 +1,4 @@
-import { Chat, getMultipleChats} from "../../api";
+import { Chat, getMultipleChats } from "../../api";
 import { useState, useEffect } from "react";
 import { MessageComponent } from "../Message/Message";
 
@@ -8,20 +8,19 @@ export function ChatBox(props: { activeKeys: string[] }) {
     const [chat, setChat] = useState<Chat>({ messages: [] });
 
 
-    async function loadChats(keys : string[]) {
-        try {
-            const multipleChats: Chat | null = await getMultipleChats(keys);
-            setChat({ messages: multipleChats?.messages || [] });
-        } catch (error) {
-            console.error("Failed to load chats", error);
-            setChat({ messages: [] });
-        }
+    async function loadChats(keys: string[]) {
+        const multipleChats: Chat = await getMultipleChats(keys);
+
+        setChat({ messages: multipleChats.messages })
     }
 
     useEffect(() => {
-        loadChats(activeKeys);
         const interval = setInterval(() => {
+            if (activeKeys.some(key => key.trim() !== "")) {
                 loadChats(activeKeys);
+            } else {
+                setChat({ messages: [] });
+            }
         }, 3000); // call every 3 seconds
 
         return () => clearInterval(interval);
@@ -29,9 +28,9 @@ export function ChatBox(props: { activeKeys: string[] }) {
 
     return (
         <>
-            {chat.messages.map((message, index) => (
-                <MessageComponent key={index} message={message} />
+            {chat && chat.messages.map((message) => (
+                MessageComponent({ message })
             ))}
         </>
-    );
+    )
 }

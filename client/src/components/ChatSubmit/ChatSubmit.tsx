@@ -2,7 +2,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useState} from "react";
-import { createMessage } from "../../api";
+import {  createMessage } from "../../api";
 import React from "react";
 
 export function ChatSubmit(
@@ -25,10 +25,8 @@ export function ChatSubmit(
     
         // retrieve the keys which are active
         const activeKeys = Array.from(updatedKeyValues.entries())
-        // only keep non-empty values
-            .filter(([_, v]) => v !== "") 
             // Extract values from keyValues
-            .map(([_, v]) => v); 
+            .map(([_, v]) => v.trim()); 
         // send updated keys to App.tsx
         onKeyChange(activeKeys);
     };
