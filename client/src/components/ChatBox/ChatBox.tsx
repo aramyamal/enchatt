@@ -18,6 +18,8 @@ export function ChatBox(props: { activeKeys: string[] }) {
         const interval = setInterval(() => {
             if (activeKeys.some(key => key.trim() !== "")) {
                 loadChats(activeKeys);
+            } else {
+                setChat({ messages: [] });
             }
         }, 3000); // call every 3 seconds
 
