@@ -24,7 +24,7 @@ function App() {
             <Row className="flex-grow-1 d-flex align-items-end justify-content-center">
                 <Col className=""></Col>
 
-                <Col md={6} className="">
+                <Col md={8} className="">
                     <div className="">
                         <ChatBox activeKeys = {keyValues}/>
                     </div>

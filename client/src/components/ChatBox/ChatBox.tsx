@@ -1,5 +1,5 @@
-import { Message, Chat, getMultipleChats } from "../../api";
-import { useState, useEffect } from "react";
+import { Chat, getMultipleChats } from "../../api";
+import { useState, useEffect} from "react";
 import { MessageComponent } from "../Message/Message";
 
 export function ChatBox(props: { activeKeys: string[] }) {
@@ -9,12 +9,16 @@ export function ChatBox(props: { activeKeys: string[] }) {
 
 
     async function loadChats(keys: string[]) {
-        const multipleChats: Chat = await getMultipleChats(keys);
-
-        setChat({ messages: multipleChats.messages })
+        try {
+            const multipleChats: Chat = await getMultipleChats(keys);
+            setChat({ messages: multipleChats?.messages })
+        }catch (error){
+            console.error("Failed to fetch chats:", error);
+        }   
     }
 
     useEffect(() => {
+        loadChats(activeKeys);
         const interval = setInterval(() => {
             if (activeKeys.some(key => key.trim() !== "")) {
                 loadChats(activeKeys);
@@ -28,9 +32,9 @@ export function ChatBox(props: { activeKeys: string[] }) {
 
     return (
         <>
-            {chat && chat.messages.map((message) => (
-                MessageComponent({ message })
-            ))}
+          {chat.messages.map((message, index) => (
+            <MessageComponent key={`message-${index}`} message={message} />
+          ))}
         </>
-    )
+      );
 }

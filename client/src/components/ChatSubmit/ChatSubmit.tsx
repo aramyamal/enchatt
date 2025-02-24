@@ -1,13 +1,12 @@
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
-import { useState} from "react";
-import { Message, createMessage } from "../../api";
+import { useEffect, useState } from "react";
+import { KeyString, createMessage, getKeyClass } from "../../api";
 import React from "react";
 
 export function ChatSubmit(
-    { onKeyChange }: { onKeyChange: (activeKeys : string[]) => void }
+    { onKeyChange }: { onKeyChange: (activeKeys: string[]) => void }
 ) {
 
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
@@ -23,11 +22,11 @@ export function ChatSubmit(
         const updatedKeyValues = new Map(keyValues);
         updatedKeyValues.set(keyName, value);
         setKeyValues(updatedKeyValues);
-    
+
         // retrieve the keys which are active
         const activeKeys = Array.from(updatedKeyValues.entries())
             // Extract values from keyValues
-            .map(([_, v]) => v.trim()); 
+            .map(([_, v]) => v.trim());
         // send updated keys to App.tsx
         onKeyChange(activeKeys);
     };
@@ -41,8 +40,11 @@ export function ChatSubmit(
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
-            const keyValue = keyValues.get(selectedKey) || '';
-            sendMessage(newMessage, keyValue);
+            const keyValue = keyValues.get(selectedKey);
+            if (keyValue) {
+                sendMessage(newMessage, keyValue);
+                setNewMessage("");
+            }
         }
     };
 
@@ -54,28 +56,56 @@ export function ChatSubmit(
         }
     }
 
+    // global keyboard event listener for key switching
+    useEffect(() => {
+        const handleGlobalKeyDown = (e: KeyboardEvent) => {
+            // Check for Ctrl+1, Ctrl+2, etc.
+            if (e.ctrlKey && e.key >= '1' && e.key <= '4') {
+                e.preventDefault(); // Prevent default browser action
+                const keyNumber = parseInt(e.key);
+                const keyName = `Key ${keyNumber}`;
+                setSelectedKey(keyName);
+            }
+        };
+
+        window.addEventListener('keydown', handleGlobalKeyDown);
+
+        // clean up event listener on component unmount
+        return () => {
+            window.removeEventListener('keydown', handleGlobalKeyDown);
+        };
+    }, []);
+
     return (
-        <div className="">
+        <div className="p-2 bg-body-secondary rounded-bottom shadow-lg rounded-4">
             <InputGroup className="">
                 <Form.Control
+                    className={`border-0 bg-transparent my-2 
+                                ${getKeyClass(selectedKey as KeyString)}
+                        `}
                     onChange={(e) => { setNewMessage(e.target.value); }}
                     onKeyDown={handleKeyDown}
                     placeholder={`Enter message for ${selectedKey}...`}
                     aria-label="Key select"
+                    value={newMessage}
                 />
 
-                <Dropdown onSelect={handleSelect}>
-                    <Dropdown.Toggle className="">
+                <Dropdown
+                    onSelect={handleSelect}>
+                    <Dropdown.Toggle className={`bg-transparent border-0 
+                        ${getKeyClass(selectedKey as KeyString)}`}
+                    >
                         {selectedKey}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu className="">
-                        {[...keyValues.keys()].map((name) => (
+                        {[...keyValues.keys()].map((key) => (
                             <Dropdown.Item
-                                key={name}
-                                eventKey={name}
+                                className={`${getKeyClass(key as KeyString)}`}
+                                key={key}
+                                eventKey={key}
                             >
-                                {name}
+                                {key}
                             </Dropdown.Item>
                         ))}
                     </Dropdown.Menu>
@@ -85,13 +115,31 @@ export function ChatSubmit(
             <InputGroup>
                 {[1, 2, 3, 4].map((nr) => (
                     <React.Fragment key={nr}>
-                        <InputGroup.Text>⊛</InputGroup.Text>
                         <Form.Control
+                            className={`
+                                ms-2
+                                border-0
+                                form-control-sm
+                                rounded
+                                ${getKeyClass(`Key ${nr}` as KeyString)}
+                            `}
                             placeholder={`Key ${nr}`}
                             aria-label={`Key ${nr}`}
                             onChange={(e) => handleKeyChange(`Key ${nr}`, e.currentTarget.value)}
                             value={keyValues.get(`Key ${nr}`) || ""}
                         />
+                        <InputGroup.Text
+                            className={
+                                `me-2 border-0 bg-transparent 
+                                ${getKeyClass(`Key ${nr}` as KeyString)}
+                            `}
+                        >
+                            {keyValues.get(`Key ${nr}`)?.trim() !== "" ? (
+                                <i className="bi bi-square-fill"></i>
+                            ) : (
+                                <i className="bi bi-square"></i>
+                            )}
+                        </InputGroup.Text>
                     </React.Fragment>
                 ))}
             </InputGroup>
