@@ -17,6 +17,11 @@
     --bs-emphasis-color: rgb(var(--bs-emphasis-color-rgb));
 
     --transition-duration: 0.3s;
+
+
+    --key2-color-rgb: 140, 179, 105;
+    --key3-color-rgb: 91, 142, 125;
+    --key4-color-rgb: 188, 75, 81;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -37,6 +42,46 @@ body {
     font-family: "DM Sans", var(--bs-font-sans-serif);
 }
 
+.font-mono {
+    font-family: mono;
+}
+
 .font-serif {
     font-family: "Libre Baskerville", serif;
+}
+
+.font-serif-bold {
+    font-family: "Libre Baskerville", serif;
+    font-weight: bold;
+}
+
+.key1 {
+    color: var(--bs-body-color);
+}
+
+.key2 {
+    color: rgb(var(--key2-color-rgb));
+}
+
+.key3 {
+    color: rgb(var(--key3-color-rgb));
+}
+
+.key4 {
+    color: rgb(var(--key4-color-rgb));
+}
+
+@media (prefers-color-scheme: light) {
+
+    .key2 {
+        color: rgb(var(--key2-color-rgb));
+    }
+
+    .key3 {
+        color: rgb(var(--key3-color-rgb));
+    }
+
+    .key4 {
+        color: rgb(var(--key4-color-rgb));
+    }
 }
