@@ -1,0 +1,15 @@
+.key1 {
+    color: var(--bs-body-color);
+}
+
+.key2 {
+    color: red;
+}
+
+.key3 {
+    color: green;
+}
+
+.key4 {
+    color: blue;
+}
