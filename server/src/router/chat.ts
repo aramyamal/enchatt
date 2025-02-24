@@ -65,6 +65,7 @@ chatRouter.get("/chats", async (
         // }
         if (!key1 && !key2 && !key3 && !key4) {
             res.status(400).send("At least one key must be provided.");
+            return;
         }
 
         const combinedChat: Chat = await chatService.getOrCreateMultipleChats(
