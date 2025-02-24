@@ -34,10 +34,15 @@ export function ChatBox(props: { activeKeys: string[] }) {
             if (activeKeys.some(key => key.trim() !== "")) {
                 loadChats(activeKeys);
 <<<<<<< HEAD
+<<<<<<< HEAD
             } else {
                 setChat({ messages: [] });
 =======
 >>>>>>> 5567051 (feat(chat): add check to only fetch when keys not empty)
+=======
+            } else {
+                setChat({ messages: [] });
+>>>>>>> 5b173a2 (fix(ChatBox): handle empty keys)
             }
         }, 3000); // call every 3 seconds
 
