@@ -1,43 +1,24 @@
-import { useState } from 'react'
-import './App.css'
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import 'bootstrap/dist/css/bootstrap.min.css';
-
-import { ChatBox } from './components/ChatBox/ChatBox';
-import { ChatSubmit } from './components/ChatSubmit/ChatSubmit';
-import { TopBar } from "./components/TopBar/TopBar";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./Login";
+import Enchatt from "./Enchatt"; 
+import { useState } from "react";
 
 function App() {
-    const [keyValues, setKeyValues] = useState<string[]>([]);
-    const handleKeyChange = (activeKeys : string[]) => {
-        setKeyValues(activeKeys)
-    };
+
+    const [username, setUsername] = useState("")
+
+    const handleUsernameFromLogin = (usernameInput : string ) => {
+        setUsername(usernameInput)
+    } 
 
     return (
-        <Container fluid="xxl" className="d-flex flex-column min-vh-100">
-            <TopBar />
-            <Row className="flex-grow-1 d-flex align-items-end justify-content-center">
-                <Col className=""></Col>
-
-                <Col md={8} className="">
-                    <div className="">
-                        <ChatBox activeKeys = {keyValues}/>
-                    </div>
-                    <div className="">
-                        <ChatSubmit onKeyChange= {handleKeyChange} />
-                    </div>
-                </Col>
-
-                <Col className=""></Col>
-            </Row>
-        </Container>
+        <Router>
+            <Routes>
+                <Route path="/" element={<Login handleUsername={handleUsernameFromLogin}/>} /> 
+                <Route path="/Enchatt" element={<Enchatt username={username}/>} />
+            </Routes>
+        </Router>
     );
 }
 
 export default App;
-

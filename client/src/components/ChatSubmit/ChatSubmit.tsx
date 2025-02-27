@@ -6,7 +6,7 @@ import { KeyString, createMessage, getKeyClass } from "../../api";
 import React from "react";
 
 export function ChatSubmit(
-    { onKeyChange }: { onKeyChange: (activeKeys: string[]) => void }
+    { onKeyChange, username }: { onKeyChange: (activeKeys: string[]) => void, username : string},
 ) {
 
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
@@ -50,7 +50,7 @@ export function ChatSubmit(
 
     async function sendMessage(content: string, key: string) {
         try {
-            createMessage("browser_user", content, key);
+            createMessage(username, content, key);
         } catch (error) {
             console.error("Failed to send chat to key ", key);
         }

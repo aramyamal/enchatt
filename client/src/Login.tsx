@@ -7,13 +7,16 @@ import "./Login.css"
 import { LoginBox } from "./components/LoginBox/LoginBox";
 import { Logo } from "./components/Logo/Logo";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Login() {
-    const [username, setUsername] = useState("")
+function Login({handleUsername} : {handleUsername: (username : string) => void}) {
+    
+    // hook for navigation
+    const navigate = useNavigate();
 
-    const handleUsernameInput = (usernameInput : string) => {
-        setUsername(usernameInput)
-        
+    const handleUsernameInputFromLoginBox = (usernameInput : string) => {
+        handleUsername(usernameInput)
+        navigate("/Enchatt")
     };
 
     return (
@@ -26,7 +29,7 @@ function Login() {
               <Logo />
             </div>
             <div style={{ width: "25%", maxWidth: "500px" }}>
-              <LoginBox handleUsernameInput={handleUsernameInput}/>
+              <LoginBox handleUsernameInput={handleUsernameInputFromLoginBox}/>
             </div>
           </Col>
   

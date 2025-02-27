@@ -11,7 +11,7 @@ export const TopBar: React.FC = () => {
                     <i className="fs-5 bi-person" />
                 </Dropdown.Toggle>
                 <Dropdown.Menu className="text-center">
-                    <Dropdown.Item href="/login">Logout</Dropdown.Item>
+                    <Dropdown.Item href="/">Logout</Dropdown.Item>
                 </Dropdown.Menu>
             </Dropdown>
         </div>
