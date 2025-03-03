@@ -1,8 +1,9 @@
 import { HttpError } from "../errors/HttpError";
 import { Chat } from "../model/chat.interface";
 import { Message } from "../model/message.interface";
+import { IChatService } from "./IChatService";
 
-export class ChatService {
+export class ChatService implements IChatService {
     private chats: Map<string, Chat> = new Map(); //replace with database
     private multipleChats: Map<string, Chat> = new Map();
 

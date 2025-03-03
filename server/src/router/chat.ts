@@ -3,8 +3,9 @@ import { ChatService } from "../service/chat";
 import { Chat } from "../model/chat.interface";
 import { Message } from "../model/message.interface";
 import { HttpError } from "../errors/HttpError";
+import { IChatService } from "../service/IChatService";
 
-const chatService = new ChatService();
+const chatService: IChatService = new ChatService();
 
 export const chatRouter = express.Router();
 

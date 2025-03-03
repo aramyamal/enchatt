@@ -19,5 +19,5 @@ ChatsModel.init(
     }
 );
 
-ChatsModel.hasMany(messagesModel, { foreignKey: 'id' });
+ChatsModel.hasMany(messagesModel, { foreignKey: 'chatKey' });
 messagesModel.belongsTo(ChatsModel, { foreignKey: 'key' });

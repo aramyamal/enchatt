@@ -1,9 +1,11 @@
 import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes } from 'sequelize';
 import { sequelize } from './conn';
 import { userModel } from './user.db';
+import { ChatsModel } from './chats.db';
 
 export class messagesModel extends Model<InferAttributes<messagesModel>, InferCreationAttributes<messagesModel>> {
-    declare id : number;
+    declare id: CreationOptional<number>;
+    declare chatKey : string;
     declare sender : string;
     declare time : Date;
     declare content : string;
@@ -13,15 +15,22 @@ export class messagesModel extends Model<InferAttributes<messagesModel>, InferCr
 messagesModel.init(
     {
         id : {
-            type : DataTypes.NUMBER,
-            autoIncrement: true,
-            primaryKey : true
+            type : DataTypes.INTEGER,
+            primaryKey : true,
+            autoIncrement : true
+        },
+        chatKey : {
+            type : DataTypes.STRING,
+            references : {
+                model : ChatsModel,
+                key : 'key'
+            }
         },
         sender :{
             type : DataTypes.STRING,
             references: {
                 model : userModel,
-                key : 'id'
+                key : 'username'
             }
         },
         time : {
@@ -39,3 +48,9 @@ messagesModel.init(
         modelName: 'Messages'
     }
 );
+
+ChatsModel.hasMany(messagesModel, { foreignKey: 'chatKey' });
+messagesModel.belongsTo(ChatsModel, { foreignKey: 'chatKey' });
+
+userModel.hasMany(messagesModel, { foreignKey: 'sender' });
+messagesModel.belongsTo(userModel, { foreignKey: 'sender' });
