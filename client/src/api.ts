@@ -1,4 +1,5 @@
 import axios from "axios";
+import { hashKey } from "./encryption";
 
 axios.defaults.withCredentials = true;
 
@@ -36,10 +37,10 @@ const BASE_URL = "http://localhost:8080";
 export async function getMultipleChats(keys: string[]): Promise<Chat> {
     const chatPromises = axios.get<Chat>(`${BASE_URL}/chats/`, {
         params: {
-            key1: keys[0],
-            key2: keys[1],
-            key3: keys[2],
-            key4: keys[3]
+            key1: await hashKey(keys[0]),
+            key2: await hashKey(keys[1]),
+            key3: await hashKey(keys[2]),
+            key4: await hashKey(keys[3]),
         }
     }).then(res => res.data);
 
@@ -48,10 +49,11 @@ export async function getMultipleChats(keys: string[]): Promise<Chat> {
 
 export async function createMessage(sender: string,
     content: string, key: string): Promise<Message> {
+    const hashedKey: string = await hashKey(key);
     const message = {
         sender: sender,
         content: content
     };
-    const response = await axios.post<Message>(`${BASE_URL}/chat/${key}`, message);
+    const response = await axios.post<Message>(`${BASE_URL}/chat/${hashedKey}`, message);
     return response.data;
 }   
