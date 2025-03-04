@@ -7,7 +7,7 @@ export class messagesModel extends Model<InferAttributes<messagesModel>, InferCr
     declare id: CreationOptional<number>;
     declare chatKey : string;
     declare sender : string;
-    declare time : Date;
+    declare time : number;
     declare content : string;
     declare key: "Key 1" | "Key 2" | "Key 3" | "Key 4";
 }
@@ -34,7 +34,7 @@ messagesModel.init(
             }
         },
         time : {
-            type : DataTypes.DATE
+            type : DataTypes.NUMBER
         },
         content: {
             type : DataTypes.STRING
@@ -48,9 +48,6 @@ messagesModel.init(
         modelName: 'Messages'
     }
 );
-
-ChatsModel.hasMany(messagesModel, { foreignKey: 'chatKey' });
-messagesModel.belongsTo(ChatsModel, { foreignKey: 'chatKey' });
 
 userModel.hasMany(messagesModel, { foreignKey: 'sender' });
 messagesModel.belongsTo(userModel, { foreignKey: 'sender' });

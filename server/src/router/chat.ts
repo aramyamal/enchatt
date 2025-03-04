@@ -1,11 +1,12 @@
 import express, { Request, Response } from "express";
-import { ChatService } from "../service/chat";
+//import { ChatService } from "../service/chat";
 import { Chat } from "../model/chat.interface";
 import { Message } from "../model/message.interface";
 import { HttpError } from "../errors/HttpError";
-import { IChatService } from "../service/IChatService";
+import { IChatService  } from "../service/IChatService";
+import { chatsDbService } from "../service/chatsDbService";
 
-const chatService: IChatService = new ChatService();
+const chatService: IChatService = new chatsDbService();
 
 export const chatRouter = express.Router();
 

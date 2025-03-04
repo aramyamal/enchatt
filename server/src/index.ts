@@ -1,4 +1,5 @@
 import { app } from "./start";
+import {setupAssociations} from "../db/assc"
 
 
 /**
@@ -17,4 +18,7 @@ const PORT : number = 8080;
 app.listen(PORT, () => {
     console.log(`listening on port ${PORT}`);
 });
+setupAssociations();
+
+
 
