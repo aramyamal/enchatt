@@ -2,11 +2,12 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useEffect, useState } from "react";
-import { KeyString, RawKeyObject, RawKeys, createMessage, getKeyClass } from "../../api";
+import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, createMessage, getKeyClass } from "../../api";
 import React from "react";
+import { encrypt } from "../../encryption";
 
 export function ChatSubmit(
-    { updateDerivedKeys, updateRawKeys, username }: { updateDerivedKeys: (activeKeys: RawKeys) => void, updateRawKeys: (rawKeys:RawKeys) => void, username: string },
+    { updateDerivedKeys, updateRawKeys, derivedKeys, username }: { updateDerivedKeys: (activeKeys: RawKeys) => void, updateRawKeys: (rawKeys: RawKeys) => void, derivedKeys: DerivedKeys, username: string },
 ) {
 
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
@@ -29,21 +30,11 @@ export function ChatSubmit(
             const trimmed: string = rawValue.trim();
             if (trimmed) {
                 const keyId: keyof RawKeys = convertToKeyString(key);
-                rawKeys[keyId] = { raw: trimmed, salt: "temp"};
+                rawKeys[keyId] = { raw: trimmed, salt: "temp" };
             }
         }
         updateRawKeys(rawKeys);
         updateDerivedKeys(rawKeys);
-    };
-
-    const convertToKeyString = (key: string): keyof RawKeys => {
-        switch (key) {
-            case "Key 1": return "key1";
-            case "Key 2": return "key2";
-            case "Key 3": return "key3";
-            case "Key 4": return "key4";
-            default: throw new Error(`Unknown key: ${key}`);
-        }
     };
 
     const handleSelect = (eventKey: string | null) => {
@@ -56,18 +47,26 @@ export function ChatSubmit(
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             const keyValue = keyValues.get(selectedKey as KeyString);
-            if (keyValue) {
-                sendMessage(newMessage, {raw: keyValue});
+            const derivedKey: CryptoKey | undefined =
+                derivedKeys[convertToKeyString(selectedKey)];
+
+            if (keyValue && derivedKey) {
+                sendMessage(newMessage, { raw: keyValue }, derivedKey);
                 setNewMessage("");
             }
         }
     };
 
-    async function sendMessage(content: string, rawKey: RawKeyObject) {
+    async function sendMessage(
+        content: string,
+        rawKey: RawKeyObject,
+        aesKey: CryptoKey
+    ) {
         try {
-            createMessage(username, content, rawKey);
+            const encrypted = await encrypt(content, aesKey);
+            createMessage(username, encrypted.ciphertext, encrypted.iv, rawKey);
         } catch (error) {
-            console.error("Failed to send chat to key ", rawKey);
+            console.error("Failed to send chat to key ", rawKey.raw);
         }
     }
 

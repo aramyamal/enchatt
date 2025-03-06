@@ -40,6 +40,7 @@ function Enchatt({ username }: { username: string }) {
                         <ChatSubmit
                             updateDerivedKeys={updateDerivedKeys}
                             updateRawKeys={setRawKeyValues}
+                            derivedKeys={derivedKeyValues}
                             username={username}
                         />
                     </div>

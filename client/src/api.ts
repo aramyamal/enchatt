@@ -28,6 +28,17 @@ export interface DerivedKeys {
     key4?: CryptoKey;
 }
 
+export function convertToKeyString(key: string): keyof RawKeys {
+    switch (key) {
+        case "Key 1": return "key1";
+        case "Key 2": return "key2";
+        case "Key 3": return "key3";
+        case "Key 4": return "key4";
+        default: throw new Error(`Unknown key: ${key}`);
+    }
+};
+
+
 export function getKeyClass(keyString: KeyString): string {
     switch (keyString) {
         case "Key 1":
@@ -67,11 +78,12 @@ export async function getMultipleChats(rawKeys: RawKeys): Promise<Chat> {
 }
 
 export async function createMessage(sender: string,
-    content: string, rawKey: RawKeyObject): Promise<Message> {
+    content: string, iv: string, rawKey: RawKeyObject): Promise<Message> {
     const hashedKey: string = await hashKey(rawKey);
     const message = {
         sender: sender,
-        content: content
+        content: content,
+        iv: iv
     };
     const response = await axios.post<Message>(`${BASE_URL}/chat/${hashedKey}`, message);
     return response.data;
