@@ -5,6 +5,7 @@ axios.defaults.withCredentials = true;
 
 export type Chat = {
     messages: Message[];
+    salts: (string | undefined)[];
 }
 
 export type KeyString = "Key 1" | "Key 2" | "Key 3" | "Key 4";
@@ -59,6 +60,7 @@ export type Message = {
     time: number,
     content: string,
     key: KeyString
+    iv: string;
 }
 
 // TODO: change for finished product

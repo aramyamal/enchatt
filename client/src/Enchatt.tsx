@@ -34,7 +34,10 @@ function Enchatt({ username }: { username: string }) {
 
                 <Col md={8} className="">
                     <div className="">
-                        <ChatBox rawKeys={rawKeyValues} />
+                        <ChatBox
+                            rawKeys={rawKeyValues}
+                            derivedKeys={derivedKeyValues}
+                        />
                     </div>
                     <div className="">
                         <ChatSubmit

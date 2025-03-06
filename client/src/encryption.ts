@@ -75,3 +75,53 @@ export async function encrypt(message: string, aesKey: CryptoKey):
 
     return { ciphertext: ciphertextBase64, iv: ivBase64 };
 }
+
+// decrypt using AES-GCM
+export async function decrypt(
+    ciphertext: string,
+    iv: string,
+    aesKey: CryptoKey
+): Promise<{ success: boolean; message: string }> {
+
+    try {
+        // convert base64 ciphertext and IV back to ArrayBuffer
+        const ciphertextBytes = new Uint8Array(
+            [...atob(ciphertext)].map(char => char.charCodeAt(0))
+        );
+        const ivBytes = new Uint8Array(
+            [...atob(iv)].map(char => char.charCodeAt(0))
+        );
+
+        const decrypted = await window.crypto.subtle.decrypt(
+            { name: "AES-GCM", iv: ivBytes },
+            aesKey,
+            ciphertextBytes
+        );
+
+        // convert decrypted to string and return
+        return {
+            success: true,
+            message: new TextDecoder().decode(decrypted)
+        };
+
+    } catch (error: unknown) {
+        console.error("Decryption error details:", error);
+
+        if (error instanceof Error && error.name === "OperationError") {
+            return {
+                success: false,
+                message: "[Decryption failed - message may be corrupted or using different key]"
+            };
+        } else if (error instanceof Error) {
+            return {
+                success: false,
+                message: `[Decryption error: ${error.message}]`
+            };
+        } else {
+            return {
+                success: false,
+                message: "[Unknown decryption error]"
+            };
+        }
+    }
+}

@@ -30,7 +30,7 @@ export function ChatSubmit(
             const trimmed: string = rawValue.trim();
             if (trimmed) {
                 const keyId: keyof RawKeys = convertToKeyString(key);
-                rawKeys[keyId] = { raw: trimmed, salt: "temp" };
+                rawKeys[keyId] = { raw: trimmed};
             }
         }
         updateRawKeys(rawKeys);
