@@ -1,3 +1,5 @@
+import { RawKeyObject } from "./api";
+
 // helper function to convert ArrayBuffer to hex string
 function bufferToHex(buffer: ArrayBuffer): string {
     return Array.from(new Uint8Array(buffer))
@@ -6,16 +8,17 @@ function bufferToHex(buffer: ArrayBuffer): string {
 }
 
 // function to hash a string using SHA-256
-export async function hashKey(input: string): Promise<string> {
-    if (input.trim() === "") {
+export async function hashKey(key: RawKeyObject | undefined): Promise<string> {
+    if (!key || key.raw.trim() === "") {
         return "";
     }
     const encoder = new TextEncoder();
-    const data = encoder.encode(input);
+    const data = encoder.encode(key.raw);
     const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
     return bufferToHex(hashBuffer);
 }
 
+// derive key with PBKDF2 to be used for AES-GCM encryption
 export async function deriveAesKey(
     rawKey: string,
     salt: string,
@@ -46,6 +49,7 @@ export async function deriveAesKey(
     return aesKey;
 }
 
+// encrypt using AES-GCM
 export async function encrypt(message: string, aesKey: CryptoKey):
     Promise<{ ciphertext: string; iv: string }> {
 

@@ -7,7 +7,26 @@ export type Chat = {
     messages: Message[];
 }
 
-export type KeyString = "Key 1" | "Key 2" | "Key 3" | "Key 4" | undefined;
+export type KeyString = "Key 1" | "Key 2" | "Key 3" | "Key 4";
+
+export interface RawKeyObject {
+    raw: string,
+    salt?: string
+}
+
+export interface RawKeys {
+    key1?: RawKeyObject
+    key2?: RawKeyObject
+    key3?: RawKeyObject
+    key4?: RawKeyObject
+}
+
+export interface DerivedKeys {
+    key1?: CryptoKey;
+    key2?: CryptoKey;
+    key3?: CryptoKey;
+    key4?: CryptoKey;
+}
 
 export function getKeyClass(keyString: KeyString): string {
     switch (keyString) {
@@ -34,13 +53,13 @@ export type Message = {
 // TODO: change for finished product
 const BASE_URL = "http://localhost:8080";
 
-export async function getMultipleChats(keys: string[]): Promise<Chat> {
+export async function getMultipleChats(rawKeys: RawKeys): Promise<Chat> {
     const chatPromises = axios.get<Chat>(`${BASE_URL}/chats/`, {
         params: {
-            key1: await hashKey(keys[0]),
-            key2: await hashKey(keys[1]),
-            key3: await hashKey(keys[2]),
-            key4: await hashKey(keys[3]),
+            key1: await hashKey(rawKeys.key1),
+            key2: await hashKey(rawKeys.key2),
+            key3: await hashKey(rawKeys.key3),
+            key4: await hashKey(rawKeys.key4),
         }
     }).then(res => res.data);
 
@@ -48,8 +67,8 @@ export async function getMultipleChats(keys: string[]): Promise<Chat> {
 }
 
 export async function createMessage(sender: string,
-    content: string, key: string): Promise<Message> {
-    const hashedKey: string = await hashKey(key);
+    content: string, rawKey: RawKeyObject): Promise<Message> {
+    const hashedKey: string = await hashKey(rawKey);
     const message = {
         sender: sender,
         content: content
