@@ -1,20 +1,7 @@
-import { app } from "./start";
+import { httpServer } from "./start";  // Import the HTTP server, NOT just `app`
 
+const PORT: number = 8080;
 
-/**
-* App Variables
-*/
-
-
-const PORT : number = 8080;
-
-
-/**
-* Server Activation
-*/
-
-
-app.listen(PORT, () => {
-    console.log(`listening on port ${PORT}`);
+httpServer.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
 });
-
