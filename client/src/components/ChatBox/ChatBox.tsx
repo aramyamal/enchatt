@@ -1,40 +1,46 @@
-import { Chat, getMultipleChats } from "../../api";
-import { useState, useEffect} from "react";
+import { Chat, getMultipleChats, DerivedKeys, RawKeys } from "../../api";
+import { useState, useEffect } from "react";
 import { MessageComponent } from "../Message/Message";
 
-export function ChatBox(props: { activeKeys: string[] }) {
-    const { activeKeys } = props;
+export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
+    const { rawKeys: rawKeys, derivedKeys: derivedKeys } = props;
 
-    const [chat, setChat] = useState<Chat>({ messages: [] });
+    const [chat, setChat] = useState<Chat>({ messages: [], salts: [] });
 
 
-    async function loadChats(keys: string[]) {
+    async function loadChats(rawKeys: RawKeys) {
         try {
-            const multipleChats: Chat = await getMultipleChats(keys);
-            setChat({ messages: multipleChats?.messages })
-        }catch (error){
+            const mulChat: Chat = await getMultipleChats(rawKeys);
+            setChat({ messages: mulChat?.messages, salts: mulChat.salts })
+        } catch (error) {
             console.error("Failed to fetch chats:", error);
-        }   
+        }
     }
 
     useEffect(() => {
-        loadChats(activeKeys);
         const interval = setInterval(() => {
-            if (activeKeys.some(key => key.trim() !== "")) {
-                loadChats(activeKeys);
+            const hasNonEmptyKeys = Object.values(rawKeys)
+                .some((keyObj) => keyObj?.raw.trim() !== "");
+
+            if (hasNonEmptyKeys) {
+                loadChats(rawKeys);
             } else {
-                setChat({ messages: [] });
+                setChat({ messages: [], salts: [] });
             }
         }, 3000); // call every 3 seconds
 
         return () => clearInterval(interval);
-    }, [activeKeys]); // activeKey as dependency
-
+    }, [rawKeys]); // rawKeys as dependency
+    
     return (
         <>
-          {chat.messages.map((message, index) => (
-            <MessageComponent key={`message-${index}`} message={message} />
-          ))}
+            {chat.messages.map((message, index) => (
+                <MessageComponent
+                    key={`message-${index}`}
+                    message={message} 
+                    derivedKeys={derivedKeys}
+                    />
+            ))}
         </>
-      );
+    );
 }

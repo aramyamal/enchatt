@@ -1,12 +1,44 @@
 import axios from "axios";
+import { hashKey } from "./encryption";
 
 axios.defaults.withCredentials = true;
 
 export type Chat = {
     messages: Message[];
+    salts: (string | undefined)[];
 }
 
-export type KeyString = "Key 1" | "Key 2" | "Key 3" | "Key 4" | undefined;
+export type KeyString = "Key 1" | "Key 2" | "Key 3" | "Key 4";
+
+export interface RawKeyObject {
+    raw: string,
+    salt?: string
+}
+
+export interface RawKeys {
+    key1?: RawKeyObject
+    key2?: RawKeyObject
+    key3?: RawKeyObject
+    key4?: RawKeyObject
+}
+
+export interface DerivedKeys {
+    key1?: CryptoKey;
+    key2?: CryptoKey;
+    key3?: CryptoKey;
+    key4?: CryptoKey;
+}
+
+export function convertToKeyString(key: string): keyof RawKeys {
+    switch (key) {
+        case "Key 1": return "key1";
+        case "Key 2": return "key2";
+        case "Key 3": return "key3";
+        case "Key 4": return "key4";
+        default: throw new Error(`Unknown key: ${key}`);
+    }
+};
+
 
 export function getKeyClass(keyString: KeyString): string {
     switch (keyString) {
@@ -28,18 +60,19 @@ export type Message = {
     time: number,
     content: string,
     key: KeyString
+    iv: string;
 }
 
 // TODO: change for finished product
 const BASE_URL = "http://localhost:8080";
 
-export async function getMultipleChats(keys: string[]): Promise<Chat> {
+export async function getMultipleChats(rawKeys: RawKeys): Promise<Chat> {
     const chatPromises = axios.get<Chat>(`${BASE_URL}/chats/`, {
         params: {
-            key1: keys[0],
-            key2: keys[1],
-            key3: keys[2],
-            key4: keys[3]
+            key1: await hashKey(rawKeys.key1),
+            key2: await hashKey(rawKeys.key2),
+            key3: await hashKey(rawKeys.key3),
+            key4: await hashKey(rawKeys.key4),
         }
     }).then(res => res.data);
 
@@ -47,11 +80,13 @@ export async function getMultipleChats(keys: string[]): Promise<Chat> {
 }
 
 export async function createMessage(sender: string,
-    content: string, key: string): Promise<Message> {
+    content: string, iv: string, rawKey: RawKeyObject): Promise<Message> {
+    const hashedKey: string = await hashKey(rawKey);
     const message = {
         sender: sender,
-        content: content
+        content: content,
+        iv: iv
     };
-    const response = await axios.post<Message>(`${BASE_URL}/chat/${key}`, message);
+    const response = await axios.post<Message>(`${BASE_URL}/chat/${hashedKey}`, message);
     return response.data;
 }   

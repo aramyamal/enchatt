@@ -2,33 +2,39 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useEffect, useState } from "react";
-import { KeyString, createMessage, getKeyClass } from "../../api";
+import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, createMessage, getKeyClass } from "../../api";
 import React from "react";
+import { encrypt } from "../../encryption";
 
 export function ChatSubmit(
-    { onKeyChange, username }: { onKeyChange: (activeKeys: string[]) => void, username : string},
+    { updateDerivedKeys, updateRawKeys, derivedKeys, username }: { updateDerivedKeys: (activeKeys: RawKeys) => void, updateRawKeys: (rawKeys: RawKeys) => void, derivedKeys: DerivedKeys, username: string },
 ) {
 
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
     const [newMessage, setNewMessage] = useState<string>("");
-    const [keyValues, setKeyValues] = useState<Map<string, string>>(new Map([
+    const [keyValues, setKeyValues] = useState<Map<KeyString, string>>(new Map([
         ["Key 1", ""],
         ["Key 2", ""],
         ["Key 3", ""],
         ["Key 4", ""]
     ]));
 
-    const handleKeyChange = (keyName: string, value: string) => {
+    const handleKeyChange = (keyName: KeyString, value: string) => {
         const updatedKeyValues = new Map(keyValues);
         updatedKeyValues.set(keyName, value);
         setKeyValues(updatedKeyValues);
 
-        // retrieve the keys which are active
-        const activeKeys = Array.from(updatedKeyValues.entries())
-            // Extract values from keyValues
-            .map(([_, v]) => v.trim());
-        // send updated keys to App.tsx
-        onKeyChange(activeKeys);
+        // send updated keys to parent component in RawKeys format with salt
+        const rawKeys: RawKeys = {};
+        for (const [key, rawValue] of updatedKeyValues.entries()) {
+            const trimmed: string = rawValue.trim();
+            if (trimmed) {
+                const keyId: keyof RawKeys = convertToKeyString(key);
+                rawKeys[keyId] = { raw: trimmed};
+            }
+        }
+        updateRawKeys(rawKeys);
+        updateDerivedKeys(rawKeys);
     };
 
     const handleSelect = (eventKey: string | null) => {
@@ -40,19 +46,27 @@ export function ChatSubmit(
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
-            const keyValue = keyValues.get(selectedKey);
-            if (keyValue) {
-                sendMessage(newMessage, keyValue);
+            const keyValue = keyValues.get(selectedKey as KeyString);
+            const derivedKey: CryptoKey | undefined =
+                derivedKeys[convertToKeyString(selectedKey)];
+
+            if (keyValue && derivedKey) {
+                sendMessage(newMessage, { raw: keyValue }, derivedKey);
                 setNewMessage("");
             }
         }
     };
 
-    async function sendMessage(content: string, key: string) {
+    async function sendMessage(
+        content: string,
+        rawKey: RawKeyObject,
+        aesKey: CryptoKey
+    ) {
         try {
-            createMessage(username, content, key);
+            const encrypted = await encrypt(content, aesKey);
+            createMessage(username, encrypted.ciphertext, encrypted.iv, rawKey);
         } catch (error) {
-            console.error("Failed to send chat to key ", key);
+            console.error("Failed to send chat to key ", rawKey.raw);
         }
     }
 
@@ -125,8 +139,8 @@ export function ChatSubmit(
                             `}
                             placeholder={`Key ${nr}`}
                             aria-label={`Key ${nr}`}
-                            onChange={(e) => handleKeyChange(`Key ${nr}`, e.currentTarget.value)}
-                            value={keyValues.get(`Key ${nr}`) || ""}
+                            onChange={(e) => handleKeyChange(`Key ${nr}` as KeyString, e.currentTarget.value)}
+                            value={keyValues.get(`Key ${nr}` as KeyString) || ""}
                         />
                         <InputGroup.Text
                             className={
@@ -134,7 +148,7 @@ export function ChatSubmit(
                                 ${getKeyClass(`Key ${nr}` as KeyString)}
                             `}
                         >
-                            {keyValues.get(`Key ${nr}`)?.trim() !== "" ? (
+                            {keyValues.get(`Key ${nr}` as KeyString)?.trim() !== "" ? (
                                 <i className="bi bi-square-fill"></i>
                             ) : (
                                 <i className="bi bi-square"></i>

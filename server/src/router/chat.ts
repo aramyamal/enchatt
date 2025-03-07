@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import { ChatService } from "../service/chat";
-import { Chat } from "../model/chat.interface";
+import { Chat, CombinedChat } from "../model/chat.interface";
 import { Message } from "../model/message.interface";
 import { HttpError } from "../errors/HttpError";
 
@@ -28,14 +28,15 @@ chatRouter.get("/chat/:key", async (
 });
 
 chatRouter.post("/chat/:key", async (
-    req: Request<{ key: string }, {}, { sender: string, content: string }>,
+    req: Request<{ key: string }, {}, { sender: string, content: string, iv: string }>,
     res: Response<Message | string>
 ) => {
     try {
         const { key } = req.params;
         const sender: string = req.body.sender;
         const content: string = req.body.content;
-        const message: Promise<Message> = chatService.sendMessage(key, sender, content);
+        const iv: string = req.body.iv;
+        const message: Promise<Message> = chatService.sendMessage(key, sender, content, iv);
         res.status(201).send(await message);
         return;
     } catch (e: any) {
@@ -57,7 +58,7 @@ chatRouter.get("/chats", async (
         key3?: string,
         key4?: string
     }>,
-    res: Response<Chat | string>
+    res: Response<CombinedChat | string>
 ) => {
     try {
         const { key1, key2, key3, key4 } = req.query;
@@ -69,7 +70,7 @@ chatRouter.get("/chats", async (
             return;
         }
 
-        const combinedChat: Chat = await chatService.getOrCreateMultipleChats(
+        const combinedChat: CombinedChat= await chatService.getOrCreateMultipleChats(
             key1 as string, 
             key2 as string,
             key3 as string, 
