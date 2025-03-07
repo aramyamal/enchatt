@@ -6,7 +6,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./Login.css"
 import { LoginBox } from "./components/LoginBox/LoginBox";
 import { Logo } from "./components/Logo/Logo";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Login({handleUsername} : {handleUsername: (username : string) => void}) {

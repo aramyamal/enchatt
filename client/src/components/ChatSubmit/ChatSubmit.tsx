@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, createMessage, getKeyClass } from "../../api";
 import React from "react";
 import { encrypt } from "../../encryption";
+import socket from "../../socket"; // <-- Import the socket instance
 
 export function ChatSubmit(
     { updateDerivedKeys, updateRawKeys, derivedKeys, username }: { updateDerivedKeys: (activeKeys: RawKeys) => void, updateRawKeys: (rawKeys: RawKeys) => void, derivedKeys: DerivedKeys, username: string },
@@ -30,7 +31,7 @@ export function ChatSubmit(
             const trimmed: string = rawValue.trim();
             if (trimmed) {
                 const keyId: keyof RawKeys = convertToKeyString(key);
-                rawKeys[keyId] = { raw: trimmed};
+                rawKeys[keyId] = { raw: trimmed };
             }
         }
         updateRawKeys(rawKeys);
@@ -64,13 +65,30 @@ export function ChatSubmit(
     ) {
         try {
             const encrypted = await encrypt(content, aesKey);
+            // Existing call if needed
             createMessage(username, encrypted.ciphertext, encrypted.iv, rawKey);
+
+            // emit the encrypted message via Socket.io
+            socket.emit("chatMessage", {
+                username,
+                ciphertext: encrypted.ciphertext,
+                iv: encrypted.iv,
+                rawKey: rawKey.raw,
+            });
+
+            // console log output for when a message is successfully sent via a socket
+            console.log("Message sent via socket:", {
+                username,
+                ciphertext: encrypted.ciphertext,
+                iv: encrypted.iv,
+                rawKey: rawKey.raw,
+            });
         } catch (error) {
-            console.error("Failed to send chat to key ", rawKey.raw);
+            console.error("Failed to send chat to key ", rawKey.raw, error);
         }
     }
 
-    // global keyboard event listener for key switching
+    // Global keyboard event listener for key switching
     useEffect(() => {
         const handleGlobalKeyDown = (e: KeyboardEvent) => {
             // Check for Ctrl+1, Ctrl+2, etc.
@@ -84,7 +102,7 @@ export function ChatSubmit(
 
         window.addEventListener('keydown', handleGlobalKeyDown);
 
-        // clean up event listener on component unmount
+        // Clean up event listener on component unmount
         return () => {
             window.removeEventListener('keydown', handleGlobalKeyDown);
         };
@@ -104,21 +122,14 @@ export function ChatSubmit(
                     value={newMessage}
                 />
 
-                <Dropdown
-                    onSelect={handleSelect}>
-                    <Dropdown.Toggle className={`bg-transparent border-0 
-                        ${getKeyClass(selectedKey as KeyString)}`}
-                    >
+                <Dropdown onSelect={handleSelect}>
+                    <Dropdown.Toggle className={`bg-transparent border-0 ${getKeyClass(selectedKey as KeyString)}`}>
                         {selectedKey}
                     </Dropdown.Toggle>
 
-                    <Dropdown.Menu className="">
+                    <Dropdown.Menu>
                         {[...keyValues.keys()].map((key) => (
-                            <Dropdown.Item
-                                className={`${getKeyClass(key as KeyString)}`}
-                                key={key}
-                                eventKey={key}
-                            >
+                            <Dropdown.Item className={`${getKeyClass(key as KeyString)}`} key={key} eventKey={key}>
                                 {key}
                             </Dropdown.Item>
                         ))}
@@ -143,10 +154,7 @@ export function ChatSubmit(
                             value={keyValues.get(`Key ${nr}` as KeyString) || ""}
                         />
                         <InputGroup.Text
-                            className={
-                                `me-2 border-0 bg-transparent 
-                                ${getKeyClass(`Key ${nr}` as KeyString)}
-                            `}
+                            className={`me-2 border-0 bg-transparent ${getKeyClass(`Key ${nr}` as KeyString)}`}
                         >
                             {keyValues.get(`Key ${nr}` as KeyString)?.trim() !== "" ? (
                                 <i className="bi bi-square-fill"></i>
@@ -158,5 +166,5 @@ export function ChatSubmit(
                 ))}
             </InputGroup>
         </div>
-    )
+    );
 }

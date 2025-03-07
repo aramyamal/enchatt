@@ -10,22 +10,23 @@ export const chatRouter = express.Router();
 
 chatRouter.get("/chat/:key", async (
     req: Request<{ key: string }>,
-    res: Response<Chat | string>
+    res: Response<{ messages: Message[], ivs: string } | { error: string }>
 ) => {
     try {
         const { key } = req.params;
         const chat: Chat = await chatService.getOrCreateChat(key);
-        res.status(200).send(chat);
+
+        // Ensure we send IVs along with messages
+        res.status(200).json({ messages: chat.messages, ivs: chat.salt });
     } catch (e: any) {
         if (e instanceof HttpError) {
-            res.status(e.statusCode).send(e.message);
-        } else if (e instanceof Error) {
-            res.status(500).send(e.message);
+            res.status(e.statusCode).json({ error: e.message });
         } else {
-            res.status(500).send("Unknown error occurred");
+            res.status(500).json({ error: "Unknown error occurred" });
         }
     }
 });
+
 
 chatRouter.post("/chat/:key", async (
     req: Request<{ key: string }, {}, { sender: string, content: string, iv: string }>,
