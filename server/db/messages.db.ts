@@ -7,8 +7,8 @@ export class messagesModel extends Model<InferAttributes<messagesModel>, InferCr
     declare id: CreationOptional<number>;
     declare chatKey : string;
     declare sender : string;
-    declare time : number;
     declare content : string;
+    public createdAt!: CreationOptional<Date>;
     declare key: "Key 1" | "Key 2" | "Key 3" | "Key 4";
 }
 
@@ -28,16 +28,14 @@ messagesModel.init(
         },
         sender :{
             type : DataTypes.STRING,
-            references: {
-                model : userModel,
-                key : 'username'
-            }
-        },
-        time : {
-            type : DataTypes.NUMBER
         },
         content: {
             type : DataTypes.STRING
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
         },
         key: {
             type : DataTypes.STRING
@@ -45,9 +43,7 @@ messagesModel.init(
     },
     {
         sequelize,
-        modelName: 'Messages'
+        modelName: 'Messages',
+        tableName: 'Messages'
     }
 );
-
-userModel.hasMany(messagesModel, { foreignKey: 'sender' });
-messagesModel.belongsTo(userModel, { foreignKey: 'sender' });

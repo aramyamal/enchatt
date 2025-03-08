@@ -22,7 +22,6 @@ export class chatsDbService implements IChatService {
         const message = await messagesModel.create({
             chatKey : key,
             sender : sender,
-            time : Date.now(), //should be deleted!!!!
             content : content,
             key : 'Key 1'
         })
@@ -30,7 +29,7 @@ export class chatsDbService implements IChatService {
     }
 
     async getOrCreateMultipleChats(key1: string, key2: string, key3: string, key4: string): Promise<messagesModel[]> {
-        const keys : string [] = [key1,key2,key3,key4];
+        const keys : string [] = [key1,key2,key3,key4].filter(Boolean);
         const allMessages = [];
 
         for(const key of keys){
@@ -42,7 +41,7 @@ export class chatsDbService implements IChatService {
             const messages = await messagesModel.findAll({where : {chatKey :key}})
             allMessages.push(...messages);
         }  
-        allMessages.sort((a, b) => a.time - b.time);
+        allMessages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
         return allMessages;
     }
 }

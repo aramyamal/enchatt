@@ -1,6 +1,7 @@
 import express from "express";
 import { chatRouter } from "./router/chat";
 import cors from "cors";
+import { sequelize } from "../db/conn";
 
 export const app = express();
 
@@ -11,3 +12,12 @@ app.use(cors({
 }));
 app.use("/", chatRouter);
 
+
+
+sequelize.sync({force : true})
+  .then(() => {
+    console.log('Database synchronized');
+  })
+  .catch((error) => {
+    console.error('Error syncing database:', error);
+  });

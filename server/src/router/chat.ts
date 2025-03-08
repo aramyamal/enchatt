@@ -1,5 +1,4 @@
 import express, { Request, Response } from "express";
-//import { ChatService } from "../service/chat";
 import { Chat } from "../model/chat.interface";
 import { Message } from "../model/message.interface";
 import { HttpError } from "../errors/HttpError";
@@ -16,8 +15,8 @@ chatRouter.get("/chat/:key", async (
 ) => {
     try {
         const { key } = req.params;
-        const chat: Chat = await chatService.getOrCreateChat(key);
-        res.status(200).send(chat);
+        const chat = await chatService.getOrCreateChat(key);
+        res.status(200).send(JSON.stringify(chat));
     } catch (e: any) {
         if (e instanceof HttpError) {
             res.status(e.statusCode).send(e.message);
@@ -37,9 +36,8 @@ chatRouter.post("/chat/:key", async (
         const { key } = req.params;
         const sender: string = req.body.sender;
         const content: string = req.body.content;
-        const message: Promise<Message> = chatService.sendMessage(key, sender, content);
-        res.status(201).send(await message);
-        return;
+        const message = await chatService.sendMessage(key, sender, content);
+        res.status(201).json(message);
     } catch (e: any) {
         if (e instanceof HttpError) {
             res.status(e.statusCode).send(e.message);
@@ -71,15 +69,14 @@ chatRouter.get("/chats", async (
             return;
         }
 
-        const combinedChat: Chat = await chatService.getOrCreateMultipleChats(
+        const combinedChat = await chatService.getOrCreateMultipleChats(
             key1 as string, 
             key2 as string,
             key3 as string, 
             key4 as string
         );
 
-        res.status(202).send(combinedChat);
-
+        res.status(202).json(combinedChat);
     }
     catch (e: any) {
         if (e instanceof HttpError) {

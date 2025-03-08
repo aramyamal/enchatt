@@ -14,7 +14,8 @@ userModel.init(
             primaryKey : true
         },
         username : {
-            type : DataTypes.STRING
+            type : DataTypes.STRING,
+            unique: true
         }
     },
     {
