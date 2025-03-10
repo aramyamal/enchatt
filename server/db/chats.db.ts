@@ -4,6 +4,7 @@ import { messagesModel } from './messages.db';
 
 export class ChatsModel extends Model<InferAttributes<ChatsModel>, InferCreationAttributes<ChatsModel>> {
     declare key: string;
+    declare salt : string
 }
 
 ChatsModel.init(
@@ -11,6 +12,10 @@ ChatsModel.init(
         key: {
             type : DataTypes.STRING,
             primaryKey : true
+        },
+        salt : {
+            type : DataTypes.STRING,
+            allowNull: true
         }
     },
         {

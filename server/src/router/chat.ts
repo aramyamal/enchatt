@@ -4,6 +4,7 @@ import { Message } from "../model/message.interface";
 import { HttpError } from "../errors/HttpError";
 import { IChatService  } from "../service/IChatService";
 import { chatsDbService } from "../service/chatsDbService";
+import { messagesModel } from "../../db/messages.db";
 
 const chatService: IChatService = new chatsDbService();
 
@@ -11,12 +12,12 @@ export const chatRouter = express.Router();
 
 chatRouter.get("/chat/:key", async (
     req: Request<{ key: string }>,
-    res: Response<Chat | string>
+    res: Response<{ messages: Message[], ivs: string } | { error: string }>
 ) => {
     try {
         const { key } = req.params;
         const chat = await chatService.getOrCreateChat(key);
-        res.status(200).json(chat);
+        res.status(200).json({ messages: chat, ivs: chat.salt });
     } catch (e: any) {
         if (e instanceof HttpError) {
             res.status(e.statusCode).send(e.message);
@@ -29,15 +30,16 @@ chatRouter.get("/chat/:key", async (
 });
 
 chatRouter.post("/chat/:key", async (
-    req: Request<{ key: string }, {}, { sender: string, content: string }>,
+    req: Request<{ key: string }, {}, { sender: string, content: string, iv: string }>,
     res: Response<Message | string>
 ) => {
     try {
         const { key } = req.params;
         const sender: string = req.body.sender;
         const content: string = req.body.content;
-        const message = await chatService.sendMessage(key, sender, content);
-        res.status(201).json(message);
+        const iv : string = req.body.iv
+        const message = await chatService.sendMessage(key, sender, content, iv);
+        res.status(201).json(await message);
     } catch (e: any) {
         if (e instanceof HttpError) {
             res.status(e.statusCode).send(e.message);
@@ -57,7 +59,7 @@ chatRouter.get("/chats", async (
         key3?: string,
         key4?: string
     }>,
-    res: Response<Chat | string>
+    res: Response<messagesModel[] | string>
 ) => {
     try {
         const { key1, key2, key3, key4 } = req.query;

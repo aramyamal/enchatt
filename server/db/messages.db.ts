@@ -10,6 +10,7 @@ export class messagesModel extends Model<InferAttributes<messagesModel>, InferCr
     declare content : string;
     public createdAt!: CreationOptional<Date>;
     declare key: "Key 1" | "Key 2" | "Key 3" | "Key 4";
+    declare iv: string
 }
 
 messagesModel.init(
@@ -27,7 +28,7 @@ messagesModel.init(
             }
         },
         sender :{
-            type : DataTypes.STRING,
+            type : DataTypes.STRING
         },
         content: {
             type : DataTypes.STRING
@@ -38,6 +39,9 @@ messagesModel.init(
             defaultValue: DataTypes.NOW,
         },
         key: {
+            type : DataTypes.STRING
+        },
+        iv : {
             type : DataTypes.STRING
         }
     },
