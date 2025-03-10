@@ -29,16 +29,19 @@ export class chatsDbService implements IChatService {
     }
 
     async getOrCreateMultipleChats(key1: string, key2: string, key3: string, key4: string): Promise<messagesModel[]> {
-        const keys : string [] = [key1,key2,key3,key4].filter(Boolean);
+        const keys: string[] = [key1, key2, key3, key4].filter(Boolean);
         const allMessages = [];
 
         for(const key of keys){
             let chat = await ChatsModel.findByPk(key);
-            if (!chat){
-                chat = await ChatsModel.create({key : key});
+            if (!chat) {
+                const messages = await messagesModel.findAll({where : {chatKey :key}})
+                if (messages.length > 0){
+                    continue;
+                }
+                chat = await ChatsModel.create({ key: key })
             }
-
-            const messages = await messagesModel.findAll({where : {chatKey :key}})
+            const messages = await messagesModel.findAll({where: { chatKey: key }})
             allMessages.push(...messages);
         }  
         allMessages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());

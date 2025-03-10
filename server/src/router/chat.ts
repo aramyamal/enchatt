@@ -16,7 +16,7 @@ chatRouter.get("/chat/:key", async (
     try {
         const { key } = req.params;
         const chat = await chatService.getOrCreateChat(key);
-        res.status(200).send(JSON.stringify(chat));
+        res.status(200).json(chat);
     } catch (e: any) {
         if (e instanceof HttpError) {
             res.status(e.statusCode).send(e.message);
