@@ -12,26 +12,25 @@ export const chatRouter = express.Router();
 
 chatRouter.get("/chat/:key", async (
     req: Request<{ key: string }>,
-    res: Response<{ messages: Message[], ivs: string } | { error: string }>
+    res: Response<{ messages: messagesModel[], ivs: string } | { error: string }>
 ) => {
     try {
         const { key } = req.params;
         const chat = await chatService.getOrCreateChat(key);
-        res.status(200).json({ messages: chat, ivs: chat.salt });
+        const newMessages = await chatService.getMessages(key);
+        res.status(200).json({ messages: newMessages, ivs: chat.salt });
     } catch (e: any) {
         if (e instanceof HttpError) {
-            res.status(e.statusCode).send(e.message);
-        } else if (e instanceof Error) {
-            res.status(500).send(e.message);
+            res.status(e.statusCode).json({ error: e.message });
         } else {
-            res.status(500).send("Unknown error occurred");
+            res.status(500).json({ error: "Unknown error occurred" });
         }
     }
 });
 
 chatRouter.post("/chat/:key", async (
     req: Request<{ key: string }, {}, { sender: string, content: string, iv: string }>,
-    res: Response<Message | string>
+    res: Response<messagesModel | string>
 ) => {
     try {
         const { key } = req.params;
@@ -39,7 +38,7 @@ chatRouter.post("/chat/:key", async (
         const content: string = req.body.content;
         const iv : string = req.body.iv
         const message = await chatService.sendMessage(key, sender, content, iv);
-        res.status(201).json(await message);
+        res.status(201).json(message);
     } catch (e: any) {
         if (e instanceof HttpError) {
             res.status(e.statusCode).send(e.message);

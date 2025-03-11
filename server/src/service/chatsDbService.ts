@@ -31,6 +31,11 @@ export class chatsDbService implements IChatService {
         return message;
     }
 
+    async getMessages(key: string): Promise <messagesModel[]>{
+        const messages = await messagesModel.findAll({where : {chatKey: key}});
+        return messages
+    }
+
     async getOrCreateMultipleChats(key1: string, key2: string, key3: string, key4: string): Promise<{ messages: messagesModel[], salts: (string | null)[] }> {
         const keys: string[] = [key1, key2, key3, key4].filter(Boolean);
         const allMessages : messagesModel[] = [];
@@ -43,7 +48,7 @@ export class chatsDbService implements IChatService {
             if (!chat) {
                 const existingMessages = await messagesModel.findAll({where : {chatKey: key}});
                 if (existingMessages.length == 0) {
-                    chat = await ChatsModel.create({ key: key, salt : null });
+                    chat = await ChatsModel.create({ key: key, salt : "" });
                 }
             }
 
@@ -53,7 +58,7 @@ export class chatsDbService implements IChatService {
 
             const UpdatedMessages = messages.map(msg => ({
                 ...msg.get({plain : true}),
-                key : 'Key ${i + 1}' as "Key 1" | "Key 2" | "Key 3" | "Key 4", 
+                key : `Key ${i + 1}` as "Key 1" | "Key 2" | "Key 3" | "Key 4", 
             }));
 
             allMessages.push(...UpdatedMessages);

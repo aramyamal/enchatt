@@ -4,6 +4,7 @@ import { messagesModel } from "../../db/messages.db"
 export interface IChatService {
     getOrCreateChat(key: string): Promise<ChatsModel>
     sendMessage(key: string, sender: string, content: string, iv: string): Promise<messagesModel>
+    getMessages(key: string): Promise <messagesModel[]>
     getOrCreateMultipleChats(
         key1: string,
         key2: string,
