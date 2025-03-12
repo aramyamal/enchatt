@@ -1,23 +1,24 @@
 import express, { Request, Response } from "express";
-import { ChatService } from "../service/chat";
-import { Chat, CombinedChat } from "../model/chat.interface";
+import { Chat } from "../model/chat.interface";
 import { Message } from "../model/message.interface";
 import { HttpError } from "../errors/HttpError";
+import { IChatService  } from "../service/IChatService";
+import { chatsDbService } from "../service/chatsDbService";
+import { messagesModel } from "../../db/messages.db";
 
-const chatService = new ChatService();
+const chatService: IChatService = new chatsDbService();
 
 export const chatRouter = express.Router();
 
 chatRouter.get("/chat/:key", async (
     req: Request<{ key: string }>,
-    res: Response<{ messages: Message[], ivs: string } | { error: string }>
+    res: Response<{ messages: messagesModel[], ivs: string } | { error: string }>
 ) => {
     try {
         const { key } = req.params;
-        const chat: Chat = await chatService.getOrCreateChat(key);
-
-        // Ensure we send IVs along with messages
-        res.status(200).json({ messages: chat.messages, ivs: chat.salt });
+        const chat = await chatService.getOrCreateChat(key);
+        const newMessages = await chatService.getMessages(key);
+        res.status(200).json({ messages: newMessages, ivs: chat.salt });
     } catch (e: any) {
         if (e instanceof HttpError) {
             res.status(e.statusCode).json({ error: e.message });
@@ -30,16 +31,15 @@ chatRouter.get("/chat/:key", async (
 
 chatRouter.post("/chat/:key", async (
     req: Request<{ key: string }, {}, { sender: string, content: string, iv: string }>,
-    res: Response<Message | string>
+    res: Response<messagesModel | string>
 ) => {
     try {
         const { key } = req.params;
         const sender: string = req.body.sender;
         const content: string = req.body.content;
-        const iv: string = req.body.iv;
-        const message: Promise<Message> = chatService.sendMessage(key, sender, content, iv);
-        res.status(201).send(await message);
-        return;
+        const iv : string = req.body.iv
+        const message = await chatService.sendMessage(key, sender, content, iv);
+        res.status(201).json(message);
     } catch (e: any) {
         if (e instanceof HttpError) {
             res.status(e.statusCode).send(e.message);
@@ -59,7 +59,7 @@ chatRouter.get("/chats", async (
         key3?: string,
         key4?: string
     }>,
-    res: Response<CombinedChat | string>
+    res: Response<messagesModel[] | string>
 ) => {
     try {
         const { key1, key2, key3, key4 } = req.query;
@@ -71,15 +71,14 @@ chatRouter.get("/chats", async (
             return;
         }
 
-        const combinedChat: CombinedChat= await chatService.getOrCreateMultipleChats(
+        const combinedChat = await chatService.getOrCreateMultipleChats(
             key1 as string, 
             key2 as string,
             key3 as string, 
             key4 as string
         );
 
-        res.status(202).send(combinedChat);
-
+        res.status(202).json(combinedChat);
     }
     catch (e: any) {
         if (e instanceof HttpError) {

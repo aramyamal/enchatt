@@ -4,7 +4,7 @@ import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { ChatService } from "./service/chat";
-
+import { sequelize } from "../db/conn";
 
 export const app = express();
 
@@ -77,3 +77,11 @@ io.on("connection", (socket) => {
     });
     
 });
+
+sequelize.sync({force : false})
+  .then(() => {
+    console.log('Database synchronized');
+  })
+  .catch((error: unknown) => {
+    console.error('Error syncing database:', error);
+  });

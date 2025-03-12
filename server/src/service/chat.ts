@@ -2,8 +2,9 @@ import { HttpError } from "../errors/HttpError";
 import { Chat, CombinedChat } from "../model/chat.interface";
 import { Message } from "../model/message.interface";
 import crypto from "crypto";
+import { IChatService } from "./IChatService";
 
-export class ChatService {
+export class ChatService implements IChatService {
     private chats: Map<string, Chat> = new Map(); //replace with database
 
     // should this be async?
