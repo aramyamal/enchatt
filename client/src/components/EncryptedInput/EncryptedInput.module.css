@@ -1,0 +1,14 @@
+.bottomBorderClass {
+    border-bottom: 1px solid rgb(var(--bs-body-color-rgb));
+    padding-bottom: 5px;
+    transition: border-bottom-width 0.1s ease-in-out;
+}
+
+/* Increase border width when input is focused */
+.bottomBorderClass:focus-within {
+    border-bottom-width: 2px; /* Increase width */
+}
+
+.noCaret {
+    caret-color: transparent !important;
+}

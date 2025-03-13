@@ -1,5 +1,5 @@
 import "./Logo.module.css"
-import { EncryptedText } from "../EncryptedInput/EncryptedText";
+import { EncryptedText } from "../EncryptedText/EncryptedText";
 
 
 
