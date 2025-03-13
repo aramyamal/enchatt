@@ -4,7 +4,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import { useEffect, useState } from "react";
 import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, createMessage, getKeyClass } from "../../api";
 import React from "react";
-import { encrypt } from "../../encryption";
+import { encrypt, hashKey } from "../../encryption";
 import socket from "../../socket"; // <-- Import the socket instance
 
 export function ChatSubmit(
@@ -51,7 +51,7 @@ export function ChatSubmit(
             const derivedKey: CryptoKey | undefined =
                 derivedKeys[convertToKeyString(selectedKey)];
 
-            if (keyValue && derivedKey) {
+            if (keyValue && derivedKey && newMessage.trim() != "") {
                 sendMessage(newMessage, { raw: keyValue }, derivedKey);
                 setNewMessage("");
             }
@@ -65,23 +65,21 @@ export function ChatSubmit(
     ) {
         try {
             const encrypted = await encrypt(content, aesKey);
-            // Existing call if needed
-            createMessage(username, encrypted.ciphertext, encrypted.iv, rawKey);
 
             // emit the encrypted message via Socket.io
-            socket.emit("chatMessage", {
-                username,
-                ciphertext: encrypted.ciphertext,
-                iv: encrypted.iv,
-                rawKey: rawKey.raw,
+            socket.emit("sendMessage", {
+                chatId: await hashKey(rawKey),
+                sender: username,
+                message: encrypted.ciphertext,
+                iv: encrypted.iv
             });
 
             // console log output for when a message is successfully sent via a socket
             console.log("Message sent via socket:", {
-                username,
-                ciphertext: encrypted.ciphertext,
-                iv: encrypted.iv,
-                rawKey: rawKey.raw,
+                chatId: await hashKey(rawKey),
+                sender: username,
+                message: encrypted.ciphertext,
+                iv: encrypted.iv
             });
         } catch (error) {
             console.error("Failed to send chat to key ", rawKey.raw, error);

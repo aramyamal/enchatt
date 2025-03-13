@@ -3,12 +3,14 @@ import { chatRouter } from "./router/chat";
 import cors from "cors";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { ChatService } from "./service/chat";
+import { IChatService } from "./service/IChatService";
 import { sequelize } from "../db/conn";
+import { Message } from "./model/message.interface";
+import { chatsDbService } from "./service/chatsDbService";
 
 export const app = express();
 
-const chatService = new ChatService();
+const chatService: IChatService = new chatsDbService();
 export const httpServer = createServer(app);
 
 
@@ -26,9 +28,10 @@ app.use("/", chatRouter);
  * @constant {Server} io - the socket connection instance
  * @param {string} cors.origin - allows requests from http://localhost:5173
  */
-export const io = new Server(httpServer, { 
+ export const io = new Server(httpServer, { 
     cors: {
-        origin: "http://localhost:5173"
+        origin: "http://localhost:5173",
+        credentials: true
     }
 });
 
@@ -67,9 +70,9 @@ io.on("connection", (socket) => {
 
             // replace with DB!!!!!!
             const storedMessage = await chatService.sendMessage(chatId, sender, message, iv);
-    
             // emit the stored message (now saved in the backend) to the users connected to the chat
             io.to(chatId).emit("receiveMessage", storedMessage);
+            console.log(`Sent message to ${chatId}, with content ${storedMessage}`);
         } catch (error) {
             console.error("Error sending message:", error);
             socket.emit("error", "Failed to send message");
@@ -78,7 +81,7 @@ io.on("connection", (socket) => {
     
 });
 
-sequelize.sync({force : false})
+sequelize.sync({force : true})
   .then(() => {
     console.log('Database synchronized');
   })

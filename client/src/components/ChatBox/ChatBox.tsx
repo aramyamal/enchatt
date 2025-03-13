@@ -2,6 +2,7 @@ import { Chat, getMultipleChats, DerivedKeys, RawKeys } from "../../api";
 import { useState, useEffect } from "react";
 import { MessageComponent } from "../Message/Message";
 import socket from "../../socket"; // <-- Import the socket instance
+import { hashKey } from "../../encryption";
 
 export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
     const { rawKeys, derivedKeys } = props;
@@ -17,21 +18,36 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
         }
     }
 
-    // Polling to load historical chats every 1 seconds.
     useEffect(() => {
-        const interval = setInterval(() => {
-            const hasNonEmptyKeys = Object.values(rawKeys)
-                .some((keyObj) => keyObj?.raw.trim() !== "");
+    const joinAllChatRooms = async () => {
+        // Get all non-empty keys
+        const nonEmptyKeys = Object.values(rawKeys)
+            .filter(keyObj => keyObj?.raw.trim() !== "");
 
-            if (hasNonEmptyKeys) {
-                loadChats(rawKeys);
-            } else {
-                setChat({ messages: [], salts: [] });
-            }
-        }, 1000);
+        // Join all chat rooms for non-empty keys
+        for (const key of nonEmptyKeys) {
+            const chatId = await hashKey(key); // Await hashKey for each key
+            socket.emit("joinChat", chatId); // Join the chat room
+            console.log("Joining chat:", chatId);
+        }
+    };
 
-        return () => clearInterval(interval);
-    }, [rawKeys]);
+    joinAllChatRooms(); // Call the async function
+}, [rawKeys]);
+
+
+
+    // pull chats when keys change
+    useEffect(() => {
+        const hasNonEmptyKeys = Object.values(rawKeys)
+            .some((keyObj) => keyObj?.raw.trim() !== "");
+
+        if (hasNonEmptyKeys) {
+            loadChats(rawKeys);
+        } else {
+            setChat({ messages: [], salts: [] });
+        }
+    }, [rawKeys]);  // This runs only when rawKeys changes
 
     // socket listener to receive new chat messages which updates 
     useEffect(() => {
@@ -43,16 +59,15 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
             }));
         };
 
-
         // attach the event listener to the socket
         // listens for 'chatMessage' events from the server
-        socket.on("chatMessage", handleNewMessage);
+        socket.on("receiveMessage", handleNewMessage);
 
 
         // a clean up function
         // makes sure the event listener is removed and therefore prevent duplicate listeners
         return () => {
-            socket.off("chatMessage", handleNewMessage);
+            socket.off("receiveMessage", handleNewMessage);
         };
     }, []);
 
@@ -68,7 +83,7 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
             {chat.messages.map((message, index) => (
                 <MessageComponent
                     key={`message-${index}`}
-                    message={message} 
+                    message={message}
                     derivedKeys={derivedKeys}
                 />
             ))}

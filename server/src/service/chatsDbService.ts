@@ -37,7 +37,7 @@ export class chatsDbService implements IChatService {
     }
 
     async getOrCreateMultipleChats(key1: string, key2: string, key3: string, key4: string): Promise<{ messages: messagesModel[], salts: (string | null)[] }> {
-        const keys: string[] = [key1, key2, key3, key4].filter(Boolean);
+        const keys: string[] = [key1, key2, key3, key4]//.filter(Boolean);
         const allMessages : messagesModel[] = [];
         const salts : (string| null)[] = [];
 

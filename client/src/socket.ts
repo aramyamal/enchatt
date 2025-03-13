@@ -5,7 +5,7 @@ import { io } from "socket.io-client";
  *
  * @constant {Socket} socket - the socket connection instance
  */
-const socket = io("http://localhost:8080");
+const socket = io("http://localhost:8080", { withCredentials: true });
 
 /**
  * event listener for the 'connect' event
