@@ -15,11 +15,11 @@ function Login({handleUsername} : {handleUsername: (username : string) => void})
 
     const handleUsernameInputFromLoginBox = (usernameInput : string) => {
         handleUsername(usernameInput)
-        navigate("/Enchatt")
+        navigate("/enchatt")
     };
 
     return (
-      <Container fluid="xxl" className="d-flex flex-column min-vh-100">
+      <Container fluid="s" className="d-flex flex-column min-vh-100">
 
         <Row className="flex-grow-1 d-flex flex-column align-items-center justify-content-center">
           

@@ -2,7 +2,6 @@ import { Chat, getMultipleChats, DerivedKeys, RawKeys, RawKeyObject } from "../.
 import { useState, useEffect } from "react";
 import { MessageComponent } from "../Message/Message";
 import socket from "../../socket"; // <-- Import the socket instance
-import { hashKey } from "../../encryption";
 
 export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
     const { rawKeys, derivedKeys } = props;
@@ -19,21 +18,21 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
     }
 
     useEffect(() => {
-    const joinAllChatRooms = async () => {
-        // Get all non-empty keys
-        const nonEmptyKeys: RawKeyObject[] = Object.values(rawKeys)
-            .filter(keyObj => keyObj?.raw.trim() !== "");
+        const joinAllChatRooms = async () => {
+            // Get all non-empty keys
+            const nonEmptyKeys: RawKeyObject[] = Object.values(rawKeys)
+                .filter(keyObj => keyObj?.raw.trim() !== "");
 
-        // Join all chat rooms for non-empty keys
-        for (const key of nonEmptyKeys) {
-            const chatId = key.hashed; // Await hashKey for each key
-            socket.emit("joinChat", chatId); // Join the chat room
-            console.log("Joining chat:", chatId);
-        }
-    };
+            // Join all chat rooms for non-empty keys
+            for (const key of nonEmptyKeys) {
+                const chatId = key.hashed; // Await hashKey for each key
+                socket.emit("joinChat", chatId); // Join the chat room
+                console.log("Joining chat:", chatId);
+            }
+        };
 
-    joinAllChatRooms(); // Call the async function
-}, [rawKeys]);
+        joinAllChatRooms(); // Call the async function
+    }, [rawKeys]);
 
 
 
@@ -79,7 +78,12 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
     }, [chat.messages]);
 
     return (
-        <>
+        <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100%', // Take at least full height
+            justifyContent: 'flex-end' // Push content to bottom
+        }}>
             {chat.messages.map((message, index) => (
                 <MessageComponent
                     key={`message-${index}`}
@@ -88,6 +92,6 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
                     rawKeys={rawKeys}
                 />
             ))}
-        </>
+        </div>
     );
 }
