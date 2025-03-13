@@ -1,5 +1,3 @@
-import { RawKeyObject } from "./api";
-
 // helper function to convert ArrayBuffer to hex string
 function bufferToHex(buffer: ArrayBuffer): string {
     return Array.from(new Uint8Array(buffer))
@@ -8,12 +6,12 @@ function bufferToHex(buffer: ArrayBuffer): string {
 }
 
 // function to hash a string using SHA-256
-export async function hashKey(key: RawKeyObject | undefined): Promise<string> {
-    if (!key || key.raw.trim() === "") {
+export async function hashKey(rawKey: string | undefined): Promise<string> {
+    if (!rawKey || rawKey.trim() === "") {
         return "";
     }
     const encoder = new TextEncoder();
-    const data = encoder.encode(key.raw);
+    const data = encoder.encode(rawKey);
     const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
     return bufferToHex(hashBuffer);
 }

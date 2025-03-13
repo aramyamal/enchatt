@@ -1,31 +1,41 @@
-import { KeyString, Message, DerivedKeys, getKeyClass } from "../../api";
+import { KeyString, Message, DerivedKeys, RawKeys } from "../../api";
 import { decrypt } from "../../encryption";
 import { useEffect, useState } from "react";
 
-export function MessageComponent({ message, derivedKeys }: { message: Message, derivedKeys: DerivedKeys }) {
+export function MessageComponent({ message, derivedKeys, rawKeys }: { message: Message, derivedKeys: DerivedKeys, rawKeys: RawKeys }) {
     const [decryptedContent, setDecryptedContent] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
 
-    function extractDerivedKey(derivedKeys: DerivedKeys, keyString: KeyString): CryptoKey {
+    function extractDerivedKey(derivedKeys: DerivedKeys, chatKey: string): CryptoKey {
         let cryptoKey: CryptoKey | undefined;
-        switch (keyString) {
-            case "Key 1":
+        switch (chatKey) {
+            case rawKeys.key1?.hashed:
                 cryptoKey = derivedKeys.key1;
                 break;
-            case "Key 2":
+            case rawKeys.key2?.hashed:
                 cryptoKey = derivedKeys.key2;
                 break;
-            case "Key 3":
+            case rawKeys.key3?.hashed:
                 cryptoKey = derivedKeys.key3;
                 break;
-            case "Key 4":
+            case rawKeys.key4?.hashed:
                 cryptoKey = derivedKeys.key4;
                 break;
         }
         if (cryptoKey) {
             return cryptoKey;
         } else {
-            throw new Error("Error: Derived key not available");
+            throw new Error("ERROR: Derived key not available");
+        }
+    }
+    
+    function getKeyClass(hashedKey: string, rawKeys: RawKeys): string {
+        switch (hashedKey) {
+            case rawKeys.key1?.hashed: return "key1";
+            case rawKeys.key2?.hashed: return "key2";
+            case rawKeys.key3?.hashed: return "key3";
+            case rawKeys.key4?.hashed: return "key4";
+            default: return "key1";
         }
     }
 
@@ -34,7 +44,7 @@ export function MessageComponent({ message, derivedKeys }: { message: Message, d
 
         const decryptMessage = async () => {
             try {
-                const key = extractDerivedKey(derivedKeys, message.key);
+                const key = extractDerivedKey(derivedKeys, message.chatKey);
                 const result = await decrypt(message.content, message.iv, key);
 
                 if (isMounted) {
@@ -64,10 +74,10 @@ export function MessageComponent({ message, derivedKeys }: { message: Message, d
     return (
         <>
             <div className="my-2">
-                <span className={`font-serif-bold ${getKeyClass(message.key)}`}>
+                <span className={`font-serif-bold ${getKeyClass(message.chatKey, rawKeys)}`}>
                     {message.sender}:
                 </span>
-                <span className={`font-mono ${error ? "text-danger" : getKeyClass(message.key)}`}>
+                <span className={`font-mono ${error ? "text-danger" : getKeyClass(message.chatKey, rawKeys)}`}>
                     {error ?
                         (" " + error) :
                         (" " + (decryptedContent || "Decrypting..."))

@@ -15,7 +15,7 @@ function App() {
         <Router>
             <Routes>
                 <Route path="/" element={<Login handleUsername={handleUsernameFromLogin}/>} /> 
-                <Route path="/Enchatt" element={<Enchatt username={username}/>} />
+                <Route path="/enchatt" element={<Enchatt username={username}/>} />
             </Routes>
         </Router>
     );

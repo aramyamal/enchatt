@@ -1,5 +1,4 @@
 import axios from "axios";
-import { hashKey } from "./encryption";
 
 axios.defaults.withCredentials = true;
 
@@ -12,6 +11,7 @@ export type KeyString = "Key 1" | "Key 2" | "Key 3" | "Key 4";
 
 export interface RawKeyObject {
     raw: string,
+    hashed: string,
     salt?: string
 }
 
@@ -27,6 +27,13 @@ export interface DerivedKeys {
     key2?: CryptoKey;
     key3?: CryptoKey;
     key4?: CryptoKey;
+}
+
+export interface HashedKeys {
+    key1?: string;
+    key2?: string;
+    key3?: string;
+    key4?: string;
 }
 
 export function convertToKeyString(key: string): keyof RawKeys {
@@ -56,6 +63,7 @@ export function getKeyClass(keyString: KeyString): string {
 }
 
 export type Message = {
+    chatKey: string,
     sender: string,
     time: number,
     content: string,
@@ -69,10 +77,18 @@ const BASE_URL = "http://localhost:8080";
 export async function getMultipleChats(rawKeys: RawKeys): Promise<Chat> {
     const chatPromises = axios.get<Chat>(`${BASE_URL}/chats/`, {
         params: {
-            key1: await hashKey(rawKeys.key1),
-            key2: await hashKey(rawKeys.key2),
-            key3: await hashKey(rawKeys.key3),
-            key4: await hashKey(rawKeys.key4),
+            key1: rawKeys.key1?.hashed ?
+                  rawKeys.key1.hashed :
+                  "",
+            key2: rawKeys.key2?.hashed ?
+                  rawKeys.key2.hashed :
+                  "",
+            key3: rawKeys.key3?.hashed ?
+                  rawKeys.key3.hashed :
+                  "",
+            key4: rawKeys.key4?.hashed ?
+                  rawKeys.key4.hashed :
+                  "",
         }
     }).then(res => res.data);
 
@@ -81,7 +97,7 @@ export async function getMultipleChats(rawKeys: RawKeys): Promise<Chat> {
 
 export async function createMessage(sender: string,
     content: string, iv: string, rawKey: RawKeyObject): Promise<Message> {
-    const hashedKey: string = await hashKey(rawKey);
+    const hashedKey: string = rawKey.hashed;
     const message = {
         sender: sender,
         content: content,

@@ -1,4 +1,4 @@
-import { Chat, getMultipleChats, DerivedKeys, RawKeys } from "../../api";
+import { Chat, getMultipleChats, DerivedKeys, RawKeys, RawKeyObject } from "../../api";
 import { useState, useEffect } from "react";
 import { MessageComponent } from "../Message/Message";
 import socket from "../../socket"; // <-- Import the socket instance
@@ -21,12 +21,12 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
     useEffect(() => {
     const joinAllChatRooms = async () => {
         // Get all non-empty keys
-        const nonEmptyKeys = Object.values(rawKeys)
+        const nonEmptyKeys: RawKeyObject[] = Object.values(rawKeys)
             .filter(keyObj => keyObj?.raw.trim() !== "");
 
         // Join all chat rooms for non-empty keys
         for (const key of nonEmptyKeys) {
-            const chatId = await hashKey(key); // Await hashKey for each key
+            const chatId = key.hashed; // Await hashKey for each key
             socket.emit("joinChat", chatId); // Join the chat room
             console.log("Joining chat:", chatId);
         }
@@ -85,6 +85,7 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
                     key={`message-${index}`}
                     message={message}
                     derivedKeys={derivedKeys}
+                    rawKeys={rawKeys}
                 />
             ))}
         </>

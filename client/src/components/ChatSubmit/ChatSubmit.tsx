@@ -2,13 +2,13 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useEffect, useState } from "react";
-import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, createMessage, getKeyClass } from "../../api";
+import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, getKeyClass } from "../../api";
 import React from "react";
 import { encrypt, hashKey } from "../../encryption";
-import socket from "../../socket"; // <-- Import the socket instance
+import socket from "../../socket"; 
 
 export function ChatSubmit(
-    { updateDerivedKeys, updateRawKeys, derivedKeys, username }: { updateDerivedKeys: (activeKeys: RawKeys) => void, updateRawKeys: (rawKeys: RawKeys) => void, derivedKeys: DerivedKeys, username: string },
+    { updateDerivedKeys, updateRawKeys, derivedKeys, rawKeys, username }: { updateDerivedKeys: (activeKeys: RawKeys) => void, updateRawKeys: (rawKeys: RawKeys) => void, derivedKeys: DerivedKeys, rawKeys: RawKeys, username: string },
 ) {
 
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
@@ -20,7 +20,7 @@ export function ChatSubmit(
         ["Key 4", ""]
     ]));
 
-    const handleKeyChange = (keyName: KeyString, value: string) => {
+    const handleKeyChange = async (keyName: KeyString, value: string) => {
         const updatedKeyValues = new Map(keyValues);
         updatedKeyValues.set(keyName, value);
         setKeyValues(updatedKeyValues);
@@ -31,7 +31,7 @@ export function ChatSubmit(
             const trimmed: string = rawValue.trim();
             if (trimmed) {
                 const keyId: keyof RawKeys = convertToKeyString(key);
-                rawKeys[keyId] = { raw: trimmed };
+                rawKeys[keyId] = { raw: trimmed, hashed: await hashKey(trimmed) };
             }
         }
         updateRawKeys(rawKeys);
@@ -45,14 +45,24 @@ export function ChatSubmit(
         return;
     };
 
+    function getHashedFromKeyString(keyString: KeyString): RawKeyObject | undefined {
+        switch (keyString) {
+            case "Key 1": return rawKeys.key1; 
+            case "Key 2": return rawKeys.key2;
+            case "Key 3": return rawKeys.key3;
+            case "Key 4": return rawKeys.key4; 
+        }
+    }
+
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
-            const keyValue = keyValues.get(selectedKey as KeyString);
+            const rawKey: RawKeyObject | undefined = 
+                getHashedFromKeyString(selectedKey as KeyString);
             const derivedKey: CryptoKey | undefined =
                 derivedKeys[convertToKeyString(selectedKey)];
 
-            if (keyValue && derivedKey && newMessage.trim() != "") {
-                sendMessage(newMessage, { raw: keyValue }, derivedKey);
+            if (rawKey && derivedKey && newMessage.trim() != "") {
+                sendMessage(newMessage, rawKey, derivedKey);
                 setNewMessage("");
             }
         }
@@ -68,7 +78,7 @@ export function ChatSubmit(
 
             // emit the encrypted message via Socket.io
             socket.emit("sendMessage", {
-                chatId: await hashKey(rawKey),
+                chatId: rawKey.hashed,
                 sender: username,
                 message: encrypted.ciphertext,
                 iv: encrypted.iv
@@ -76,7 +86,7 @@ export function ChatSubmit(
 
             // console log output for when a message is successfully sent via a socket
             console.log("Message sent via socket:", {
-                chatId: await hashKey(rawKey),
+                chatId: rawKey.hashed,
                 sender: username,
                 message: encrypted.ciphertext,
                 iv: encrypted.iv

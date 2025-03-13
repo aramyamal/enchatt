@@ -44,6 +44,7 @@ function Enchatt({ username }: { username: string }) {
                             updateDerivedKeys={updateDerivedKeys}
                             updateRawKeys={setRawKeyValues}
                             derivedKeys={derivedKeyValues}
+                            rawKeys={rawKeyValues}
                             username={username}
                         />
                     </div>
