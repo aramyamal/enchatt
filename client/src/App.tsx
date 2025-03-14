@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./Login";
-import Enchatt from "./Enchatt"; 
 import { useState } from "react";
+import Login from "./components/Login/Login";
+import Enchatt from "./components/Enchatt/Enchatt";
 
 function App() {
 
