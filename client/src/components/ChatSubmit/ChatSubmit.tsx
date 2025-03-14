@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, getKeyClass } from "../../utils/keys";
 import React from "react";
 import { encrypt, hashKey } from "../../utils/encryption";
-import socket from "../../socket"; 
+import socket from "../../utils/socket";
 
 export function ChatSubmit(
     { updateDerivedKeys, updateRawKeys, derivedKeys, rawKeys, username }: { updateDerivedKeys: (activeKeys: RawKeys) => void, updateRawKeys: (rawKeys: RawKeys) => void, derivedKeys: DerivedKeys, rawKeys: RawKeys, username: string },

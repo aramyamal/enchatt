@@ -2,7 +2,7 @@ import { DerivedKeys, RawKeys, RawKeyObject } from "../../utils/keys";
 import { Chat, getMultipleChats, } from "../../api";
 import { useState, useEffect } from "react";
 import { MessageComponent } from "../Message/Message";
-import socket from "../../socket"; // <-- Import the socket instance
+import socket from "../../utils/socket"; // <-- Import the socket instance
 
 export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
     const { rawKeys, derivedKeys } = props;
