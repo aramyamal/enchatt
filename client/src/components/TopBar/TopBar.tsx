@@ -1,19 +1,12 @@
-import Dropdown from "react-bootstrap/Dropdown";
 import "bootstrap-icons/font/bootstrap-icons.css"
 import { Logo } from "../Logo/Logo";
+import { SignOut } from "../SignOut/signOut";
 
-export const TopBar: React.FC = () => {
+export function TopBar () {
     return (
         <div className="d-flex justify-content-between align-items-center">
-            <a className='fs-1 font-serif text-decoration-none text-body' href="/"><Logo/></a>
-            <Dropdown align="end">
-                <Dropdown.Toggle variant="transparent" id="dropdown-basic">
-                    <i className="fs-5 bi-person" />
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="text-center">
-                    <Dropdown.Item href="/">Logout</Dropdown.Item>
-                </Dropdown.Menu>
-            </Dropdown>
+            <a className='fs-1 font-serif text-decoration-none text-body'><Logo/></a>
+            <a className='fs-4 font-serif text-decoration-none text-body' href="/"><SignOut/> </a>
         </div>
     );
 }
