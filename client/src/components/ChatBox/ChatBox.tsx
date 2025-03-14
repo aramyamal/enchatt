@@ -1,4 +1,5 @@
-import { Chat, getMultipleChats, DerivedKeys, RawKeys, RawKeyObject } from "../../api";
+import { DerivedKeys, RawKeys, RawKeyObject } from "../../utils/keys";
+import { Chat, getMultipleChats, } from "../../api";
 import { useState, useEffect } from "react";
 import { MessageComponent } from "../Message/Message";
 import socket from "../../socket"; // <-- Import the socket instance

@@ -2,9 +2,9 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useEffect, useState } from "react";
-import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, getKeyClass } from "../../api";
+import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, getKeyClass } from "../../utils/keys";
 import React from "react";
-import { encrypt, hashKey } from "../../encryption";
+import { encrypt, hashKey } from "../../utils/encryption";
 import socket from "../../socket"; 
 
 export function ChatSubmit(
