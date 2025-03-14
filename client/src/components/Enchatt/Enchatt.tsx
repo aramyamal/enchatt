@@ -5,12 +5,12 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { ChatBox } from './components/ChatBox/ChatBox';
-import { ChatSubmit } from './components/ChatSubmit/ChatSubmit';
-import { TopBar } from "./components/TopBar/TopBar";
-import { DerivedKeys, RawKeys } from './api';
-import { deriveAesKey } from './encryption';
 import { useNavigate } from 'react-router-dom';
+import { DerivedKeys, RawKeys } from '../../utils/keys';
+import { deriveAesKey } from '../../utils/encryption';
+import { TopBar } from '../TopBar/TopBar';
+import { ChatBox } from '../ChatBox/ChatBox';
+import { ChatSubmit } from '../ChatSubmit/ChatSubmit';
 
 function Enchatt({ username }: { username: string }) {
     const navigate = useNavigate();
@@ -45,7 +45,7 @@ function Enchatt({ username }: { username: string }) {
             {/* Scrollable middle section */}
             <Row className="flex-grow-1 overflow-hidden m-0">
                 <Col md={10} className="h-100 mx-auto px-3">
-                    <div className="h-100 overflow-auto">
+                    <div className="h-100">
                         <ChatBox
                             rawKeys={rawKeyValues}
                             derivedKeys={derivedKeyValues}

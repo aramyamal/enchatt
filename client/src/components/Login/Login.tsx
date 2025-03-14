@@ -4,9 +4,9 @@ import Col from "react-bootstrap/Col";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import "./Login.css"
-import { LoginBox } from "./components/LoginBox/LoginBox";
-import { Logo } from "./components/Logo/Logo";
 import { useNavigate } from "react-router-dom";
+import { Logo } from "../Logo/Logo";
+import { LoginBox } from "../LoginBox/LoginBox";
 
 function Login({handleUsername} : {handleUsername: (username : string) => void}) {
     

@@ -1,17 +1,33 @@
-import { Chat, getMultipleChats, DerivedKeys, RawKeys, RawKeyObject } from "../../api";
-import { useState, useEffect } from "react";
+import { DerivedKeys, RawKeys, RawKeyObject } from "../../utils/keys";
+import { Chat, getMultipleChats, } from "../../api";
+import { useState, useEffect, useRef } from "react";
 import { MessageComponent } from "../Message/Message";
-import socket from "../../socket"; // <-- Import the socket instance
+import socket from "../../utils/socket"; // <-- Import the socket instance
 
 export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
     const { rawKeys, derivedKeys } = props;
 
     const [chat, setChat] = useState<Chat>({ messages: [], salts: [] });
+    const chatContainerRef = useRef<HTMLDivElement>(null);  // Reference to the chat container
+
+    // function to scroll to the bottom
+    const scrollToBottom = () => {
+        setTimeout(() => {
+            const container = chatContainerRef.current;
+            if (container) {
+                container.scrollTo({
+                    top: container.scrollHeight,
+                    behavior: 'smooth' // Ensures smooth scrolling
+                });
+            }
+        }, 0);
+    };
 
     async function loadChats(rawKeys: RawKeys) {
         try {
             const mulChat: Chat = await getMultipleChats(rawKeys);
             setChat({ messages: mulChat?.messages, salts: mulChat.salts });
+            setTimeout(scrollToBottom, 100);
         } catch (error) {
             console.error("Failed to fetch chats:", error);
         }
@@ -56,6 +72,8 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
                 ...prevChat,
                 messages: [...prevChat.messages, newMsg]
             }));
+            // scroll to bottom when new chat is recieved
+            setTimeout(scrollToBottom, 50);
         };
 
         // attach the event listener to the socket
@@ -68,6 +86,7 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
         return () => {
             socket.off("receiveMessage", handleNewMessage);
         };
+
     }, []);
 
     // console log output for when a chat is successfully rendered
@@ -78,20 +97,29 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
     }, [chat.messages]);
 
     return (
-        <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            minHeight: '100%', // Take at least full height
-            justifyContent: 'flex-end' // Push content to bottom
-        }}>
-            {chat.messages.map((message, index) => (
-                <MessageComponent
-                    key={`message-${index}`}
-                    message={message}
-                    derivedKeys={derivedKeys}
-                    rawKeys={rawKeys}
-                />
-            ))}
+        <div
+            ref={chatContainerRef}
+            style={{
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%', // Take at least full height
+                overflowY: 'auto',
+                scrollbarWidth: 'none', // Firefox
+                msOverflowStyle: 'none', // IE/Edge
+                WebkitOverflowScrolling: 'touch', // iOS momentum scrolling
+            }}
+            className="hide-scrollbar"
+        >
+            <div style={{ marginTop: 'auto' }}>
+                {chat.messages.map((message, index) => (
+                    <MessageComponent
+                        key={`message-${index}`}
+                        message={message}
+                        derivedKeys={derivedKeys}
+                        rawKeys={rawKeys}
+                    />
+                ))}
+            </div>
         </div>
     );
 }

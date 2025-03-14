@@ -40,6 +40,7 @@ body {
             rgb(var(--bs-body-bg-rgb)),
             rgb(var(--bs-secondary-bg-rgb))) !important;
     font-family: "DM Sans", var(--bs-font-sans-serif);
+    scroll-behavior: smooth;
 }
 
 .font-mono {

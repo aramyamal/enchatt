@@ -1,5 +1,6 @@
-import { KeyString, Message, DerivedKeys, RawKeys } from "../../api";
-import { decrypt } from "../../encryption";
+import { Message } from "../../api";
+import { DerivedKeys, RawKeys } from "../../utils/keys";
+import { decrypt } from "../../utils/encryption";
 import { useEffect, useState } from "react";
 
 export function MessageComponent({ message, derivedKeys, rawKeys }: { message: Message, derivedKeys: DerivedKeys, rawKeys: RawKeys }) {
