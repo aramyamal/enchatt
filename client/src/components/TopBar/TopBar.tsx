@@ -1,6 +1,6 @@
 import "bootstrap-icons/font/bootstrap-icons.css"
 import { Logo } from "../Logo/Logo";
-import { SignOut } from "../SignOut/signOut";
+import { SignOut } from "../SignOut/SignOut";
 
 export function TopBar () {
     return (
