@@ -45,7 +45,7 @@ function Enchatt({ username }: { username: string }) {
             {/* Scrollable middle section */}
             <Row className="flex-grow-1 overflow-hidden m-0">
                 <Col md={10} className="h-100 mx-auto px-3">
-                    <div className="h-100 overflow-auto">
+                    <div className="h-100">
                         <ChatBox
                             rawKeys={rawKeyValues}
                             derivedKeys={derivedKeyValues}
