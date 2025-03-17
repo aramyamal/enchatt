@@ -17,7 +17,7 @@ import { LoginBox } from "../LoginBox/LoginBox";
  * @param {Function} props.handleUsername - function to update the username in the parent component
  * @returns {JSX.Element} the rendered Login component
  */
-function Login({handleUsername} : {handleUsername: (username : string) => void}) {
+export function Login({handleUsername} : {handleUsername: (username : string) => void}) {
     
     // hook for navigation
     const navigate = useNavigate();

@@ -1,9 +1,11 @@
 /** @jest-environment jsdom */
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import { ChatBox } from "../components/ChatBox/ChatBox";
 import { getMultipleChats } from "../api";
 import socket from "../utils/socket";
 import { act } from "@testing-library/react";
+import { Login } from '../components/Login/Login';
+import { MemoryRouter } from 'react-router-dom';
 
 
 Element.prototype.scrollTo = jest.fn();
@@ -30,7 +32,15 @@ jest.mock('../utils/encryption', () => ({
   })),
 }));
 
-describe("ChatBox Integration Test", () => {
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
+describe(" End to end tests", () => {
+  const mockHandleUsername = jest.fn();
+
   const mockRawKeys = {
     key1: { raw: "raw1", hashed: "hashed1" },
     key2: { raw: "raw2", hashed: "hashed2" },
@@ -62,13 +72,56 @@ describe("ChatBox Integration Test", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockNavigate.mockClear();
     (getMultipleChats as jest.Mock).mockResolvedValue({ 
       messages: mockMessages, 
       salts: ["salt1", "salt2"] 
     });
   });
 
-  it("fetches and displays messages from API", async () => {
+  it('should login successfully', async() =>{
+    render(
+      <MemoryRouter>
+        <Login handleUsername={mockHandleUsername} />
+      </MemoryRouter>
+    );
+
+    const input = screen.getByPlaceholderText(/type your username here/i);
+
+    fireEvent.change(input, { target: { value: 'browser_user' } });
+    await act(async () => {
+      fireEvent.keyDown(input, { 
+        key: 'Enter',
+        code: 'Enter',
+        charCode: 13,
+        keyCode: 13
+      });
+    });
+
+    await waitFor(() => {
+      expect(mockHandleUsername).toHaveBeenCalledWith('browser_user');
+      expect(mockNavigate).toHaveBeenCalledWith('/enchatt');
+    });
+  });
+
+  it("should create a chat", async () =>{
+    render(<ChatBox rawKeys={mockRawKeys} derivedKeys={mockDerivedKeys} />);
+    await waitFor(() => {
+      expect(getMultipleChats).toHaveBeenCalledWith(mockRawKeys);
+    });
+
+    const chatContainer = document.querySelector('.hide-scrollbar');
+    expect(chatContainer).toBeInTheDocument();
+    expect(chatContainer).toHaveStyle({
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%'
+    });
+  });
+  
+  
+  
+  it("should fetches and displays messages from API", async () => {
     render(<ChatBox rawKeys={mockRawKeys} derivedKeys={mockDerivedKeys} />);
     
     await waitFor(() => {
@@ -77,7 +130,7 @@ describe("ChatBox Integration Test", () => {
     });
   });
 
-  it("handles new messages from WebSocket", async () => {
+  it("should get new messages with socket.io", async () => {
     render(<ChatBox rawKeys={mockRawKeys} derivedKeys={mockDerivedKeys} />);
     await screen.findByText((content) => content.includes("tjena1"));
 
