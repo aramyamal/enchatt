@@ -11,6 +11,7 @@ test("After sending a message to a key, that message should remain after " +
             .toString("hex");
         const content: string = "test content.";
         const sender: string = "testSender";
+        const testIv: string = crypto.randomBytes(12).toString("hex");
 
         // create the chat for the key
         const getRes: SuperTest.Response = await request
@@ -20,7 +21,7 @@ test("After sending a message to a key, that message should remain after " +
         // send a message to the chat associated with that key
         const postRes: SuperTest.Response = await request
             .post("/chat/")
-            .send({ key: testKey, sender: sender, content: content });
+            .send({ key: testKey, sender: sender, content: content, iv: testIv});
         expect(postRes.statusCode).toEqual(201);
 
         // retrieve the chat associated with the same key

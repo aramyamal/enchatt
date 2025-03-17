@@ -56,13 +56,19 @@ export class chatsDbService implements IChatService {
             
             const messages = await messagesModel.findAll({where: { chatKey: key }});
 
-            const UpdatedMessages = messages.map(msg => ({
-                ...msg.get({plain : true}),
-                key : `Key ${i + 1}` as "Key 1" | "Key 2" | "Key 3" | "Key 4", 
-            }));
+            // update 'key' in database
+            for (const msg of messages) {
+                await msg.update({
+                    key: `Key ${i + 1}` as "Key 1" | "Key 2" | "Key 3" | "Key 4"
+                });
+            }
+    
+            // fetch updated messages after update
+            const updatedMessages = await messagesModel.findAll({ where: { chatKey: key } });
+    
+            allMessages.push(...updatedMessages);
+        }
 
-            allMessages.push(...UpdatedMessages);
-        }  
         allMessages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
         return { messages : allMessages, salts};
     }
