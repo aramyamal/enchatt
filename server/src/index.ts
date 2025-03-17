@@ -1,4 +1,4 @@
-import { app, httpServer } from "./start";
+import { httpServer } from "./start";
 import { setupAssociations } from "../db/assc"
 
 const PORT: number = 8080;
