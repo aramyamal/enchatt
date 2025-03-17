@@ -19,9 +19,9 @@
     --transition-duration: 0.3s;
 
 
-    --key2-color-rgb: 196, 120, 140;
-    --key3-color-rgb: 140, 179, 105;
-    --key4-color-rgb: 109, 159, 145;
+    --key2-color-rgb: 176, 80, 100;
+    --key3-color-rgb: 60, 149, 25;
+    --key4-color-rgb: 69, 99, 145;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -32,6 +32,9 @@
         --bs-body-bg-rgb: 56, 51, 43;
         --bs-secondary-bg-rgb: 76, 69, 57;
 
+        --key2-color-rgb: 196, 120, 140;
+        --key3-color-rgb: 140, 179, 105;
+        --key4-color-rgb: 109, 159, 145;
     }
 }
 
@@ -39,20 +42,16 @@ body {
     background-image: linear-gradient(to right,
             rgb(var(--bs-body-bg-rgb)),
             rgb(var(--bs-secondary-bg-rgb))) !important;
-    font-family: "DM Sans", var(--bs-font-sans-serif);
+    font-family: "Fira Code", monospace;
     scroll-behavior: smooth;
 }
 
 .font-mono {
-    font-family: "Fira Code", mono;
+    font-family: "Fira Code", monospace;
 }
 
-.font-serif {
-    font-family: "Libre Baskerville", serif;
-}
-
-.font-serif-bold {
-    font-family: "Libre Baskerville", serif;
+.font-mono-bold {
+    font-family: "Fira Code", monospace;
     font-weight: bold;
 }
 

@@ -81,9 +81,7 @@ chatRouter.get("/chats", async (
         key3?: string,
         key4?: string
     }>,
-    
     res: Response<{ messages: messagesModel[], salts: (string | null)[] } | string>
-
 
 ) => {
     try {

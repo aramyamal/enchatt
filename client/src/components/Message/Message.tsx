@@ -1,10 +1,11 @@
 import { Message } from "../../api";
-import { DerivedKeys, RawKeys } from "../../utils/keys";
+import {  DerivedKeys, RawKeys } from "../../utils/keys";
 import { decrypt } from "../../utils/encryption";
 import { useEffect, useState } from "react";
 
 export function MessageComponent({ message, derivedKeys, rawKeys }: { message: Message, derivedKeys: DerivedKeys, rawKeys: RawKeys }) {
     const [decryptedContent, setDecryptedContent] = useState<string>("");
+    const [decryptedUsername, setDecryptedUsername ] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
 
     function extractDerivedKey(derivedKeys: DerivedKeys, chatKey: string): CryptoKey {
@@ -30,12 +31,22 @@ export function MessageComponent({ message, derivedKeys, rawKeys }: { message: M
         }
     }
     
-    function getKeyClass(hashedKey: string, rawKeys: RawKeys): string {
+    function getKeyClass(hashedKey: string): string {
         switch (hashedKey) {
             case rawKeys.key1?.hashed: return "key1";
             case rawKeys.key2?.hashed: return "key2";
             case rawKeys.key3?.hashed: return "key3";
             case rawKeys.key4?.hashed: return "key4";
+            default: return "key1";
+        }
+    }
+
+    function getSRAnnotation(hashedKey: string): string {
+        switch (hashedKey) {
+            case rawKeys.key1?.hashed: return "[From key 1] ";
+            case rawKeys.key2?.hashed: return "[From key 2] ";
+            case rawKeys.key3?.hashed: return "[From key 3] ";
+            case rawKeys.key4?.hashed: return "[From key 4] ";
             default: return "key1";
         }
     }
@@ -46,21 +57,25 @@ export function MessageComponent({ message, derivedKeys, rawKeys }: { message: M
         const decryptMessage = async () => {
             try {
                 const key = extractDerivedKey(derivedKeys, message.chatKey);
-                const result = await decrypt(message.content, message.iv, key);
+                const decryptedMessage = await decrypt(message.content, message.iv, key);
+                const decryptedSender = await decrypt(message.sender, message.iv, key);
 
                 if (isMounted) {
-                    if (result.success) {
-                        setDecryptedContent(result.message);
+                    if (decryptedMessage.success && decryptedSender.success) {
+                        setDecryptedContent(decryptedMessage.decrypted);
+                        setDecryptedUsername(decryptedSender.decrypted);
                         setError(null);
                     } else {
-                        setError(result.message);
+                        setError(decryptedMessage.decrypted);
                         setDecryptedContent("");
+                        setDecryptedUsername("");
                     }
                 }
             } catch (err: unknown) {
                 if (isMounted) {
                     setError(err instanceof Error ? err.message : "Failed to decrypt message");
                     setDecryptedContent("");
+                    setDecryptedUsername("");
                 }
             }
         };
@@ -75,10 +90,11 @@ export function MessageComponent({ message, derivedKeys, rawKeys }: { message: M
     return (
         <>
             <div className="my-2">
-                <span className={`font-serif-bold ${getKeyClass(message.chatKey, rawKeys)}`}>
-                    {message.sender}:
+                <span className="visually-hidden">{getSRAnnotation(message.chatKey)}</span>
+                <span className={`font-mono-bold ${getKeyClass(message.chatKey)}`}>
+                    {decryptedUsername}:
                 </span>
-                <span className={`font-mono ${error ? "text-danger" : getKeyClass(message.chatKey, rawKeys)}`}>
+                <span className={`font-mono ${error ? "text-danger" : getKeyClass(message.chatKey)}`}>
                     {error ?
                         (" " + error) :
                         (" " + (decryptedContent || "Decrypting..."))
