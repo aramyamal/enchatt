@@ -59,13 +59,10 @@ chatRouter.get("/chats", async (
         key3?: string,
         key4?: string
     }>,
-    res: Response<messagesModel[] | string>
+    res: Response<{ messages: messagesModel[], salts: (string | null)[]} | string>
 ) => {
     try {
         const { key1, key2, key3, key4 } = req.query;
-        // if (!key1 || !key2) {
-        //     res.status(400).send("Missing key1 or key2.");
-        // }
         if (!key1 && !key2 && !key3 && !key4) {
             res.status(400).send("At least one key must be provided.");
             return;

@@ -6,11 +6,11 @@ import crypto from "crypto";
 
 export class chatsDbService implements IChatService {
     async getOrCreateChat(key: string): Promise<ChatsModel> {
-        let chat  = await ChatsModel.findByPk(key)
-        if (!chat){
+        let chat = await ChatsModel.findByPk(key)
+        if (!chat) {
             return ChatsModel.create({
-                key : key,
-                salt : crypto.randomBytes(16).toString("base64")
+                key: key,
+                salt: crypto.randomBytes(16).toString("base64")
             })
         }
         return chat;
@@ -22,48 +22,44 @@ export class chatsDbService implements IChatService {
             throw new HttpError(400, "Message content empty.");
         }
         const message = await messagesModel.create({
-            chatKey : key,
-            sender : sender,
-            content : content,
-            key : 'Key 1',
-            iv : iv
+            chatKey: key,
+            sender: sender,
+            content: content,
+            iv: iv
         })
         return message;
     }
 
-    async getMessages(key: string): Promise <messagesModel[]>{
-        const messages = await messagesModel.findAll({where : {chatKey: key}});
+    async getMessages(key: string): Promise<messagesModel[]> {
+        const messages = await messagesModel.findAll({ where: { chatKey: key } });
         return messages
     }
 
     async getOrCreateMultipleChats(key1: string, key2: string, key3: string, key4: string): Promise<{ messages: messagesModel[], salts: (string | null)[] }> {
-        const keys: string[] = [key1, key2, key3, key4]//.filter(Boolean);
-        const allMessages : messagesModel[] = [];
-        const salts : (string| null)[] = [];
+        const keys: string[] = [key1, key2, key3, key4];
+        const allMessages: any[] = [];
+        const salts: (string | null)[] = [];
 
-        for(let i = 0; i < keys.length; i ++){
-            const key = keys[i]
-            let chat = await ChatsModel.findByPk(key);
-            
-            if (!chat) {
-                const existingMessages = await messagesModel.findAll({where : {chatKey: key}});
-                if (existingMessages.length == 0) {
-                    chat = await ChatsModel.create({ key: key, salt : "" });
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i];
+            const [chat, _] = await ChatsModel.findOrCreate({
+                where: { key: key },
+                defaults: {
+                    key: key,
+                    salt: crypto.randomBytes(16).toString("base64")
                 }
-            }
+            });
 
-            salts.push(chat ? chat.salt : null);
-            
-            const messages = await messagesModel.findAll({where: { chatKey: key }});
+            salts.push(chat.salt);
 
-            const UpdatedMessages = messages.map(msg => ({
-                ...msg.get({plain : true}),
-                key : `Key ${i + 1}` as "Key 1" | "Key 2" | "Key 3" | "Key 4", 
+            const messages = await messagesModel.findAll({ where: { chatKey: key } });
+            const updatedMessages = messages.map(msg => ({
+                ...msg.get({ plain: true })
             }));
+            allMessages.push(...updatedMessages);
+        }
 
-            allMessages.push(...UpdatedMessages);
-        }  
         allMessages.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
-        return { messages : allMessages, salts};
+        return { messages: allMessages, salts };
     }
 }

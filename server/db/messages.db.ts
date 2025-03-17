@@ -1,6 +1,5 @@
 import { Model, InferAttributes, InferCreationAttributes, CreationOptional, DataTypes } from 'sequelize';
 import { sequelize } from './conn';
-import { userModel } from './user.db';
 import { ChatsModel } from './chats.db';
 
 export class messagesModel extends Model<InferAttributes<messagesModel>, InferCreationAttributes<messagesModel>> {
@@ -9,7 +8,6 @@ export class messagesModel extends Model<InferAttributes<messagesModel>, InferCr
     declare sender : string;
     declare content : string;
     public createdAt!: CreationOptional<Date>;
-    declare key: "Key 1" | "Key 2" | "Key 3" | "Key 4";
     declare iv: string
 }
 
@@ -37,9 +35,6 @@ messagesModel.init(
             type: DataTypes.DATE,
             allowNull: false,
             defaultValue: DataTypes.NOW,
-        },
-        key: {
-            type : DataTypes.STRING
         },
         iv : {
             type : DataTypes.STRING
