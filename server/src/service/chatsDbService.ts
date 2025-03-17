@@ -7,7 +7,7 @@ import crypto from "crypto";
 
 /**
  * service class for handling database operations
- * implements `IChatService` interface
+ * implements IChatService interface
  */
 export class chatsDbService implements IChatService {
 

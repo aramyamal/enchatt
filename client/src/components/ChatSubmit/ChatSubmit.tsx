@@ -6,6 +6,7 @@ import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, getK
 import React from "react";
 import { encrypt, hashKey } from "../../utils/encryption";
 import socket from "../../utils/socket";
+import styles from "./ChatSubmit.module.css"
 
 /**
  * ChatSubmit component handles message input, encryption, and submission via WebSockets.
@@ -159,11 +160,12 @@ export function ChatSubmit(
     }, []);
 
     return (
-        <div className="p-2 bg-body-secondary rounded-bottom shadow-lg rounded-4">
-            <InputGroup className="">
+        <div className="p-2 bg-body-secondary rounded-bottom shadow-lg rounded-4 ">
+            <InputGroup>
                 <Form.Control
-                    className={`border-0 bg-transparent my-2 
+                    className={`bg-transparent my-2 
                                 ${getKeyClass(selectedKey as KeyString)}
+                                ${styles.customInput}
                         `}
                     onChange={(e) => { setNewMessage(e.target.value); }}
                     onKeyDown={handleKeyDown}
@@ -173,7 +175,7 @@ export function ChatSubmit(
                 />
 
                 <Dropdown onSelect={handleSelect}>
-                    <Dropdown.Toggle className={`bg-transparent border-0 ${getKeyClass(selectedKey as KeyString)}`}>
+                    <Dropdown.Toggle className={`bg-transparent border-0 ${getKeyClass(selectedKey as KeyString)} `}>
                         {selectedKey}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
@@ -189,7 +191,7 @@ export function ChatSubmit(
                 </Dropdown>
             </InputGroup>
 
-            <InputGroup>
+            <InputGroup className={`${styles.customInput}`}>
                 {[1, 2, 3, 4].map((nr) => (
                     <React.Fragment key={nr}>
                         <Form.Control
@@ -199,6 +201,7 @@ export function ChatSubmit(
                                 form-control-sm
                                 rounded
                                 ${getKeyClass(`Key ${nr}` as KeyString)}
+                                ${styles.customInput}
                             `}
                             placeholder={`Key ${nr}`}
                             aria-label={`Key ${nr}`}
@@ -206,7 +209,7 @@ export function ChatSubmit(
                             value={keyValues.get(`Key ${nr}` as KeyString) || ""}
                         />
                         <InputGroup.Text
-                            className={`me-2 border-0 bg-transparent ${getKeyClass(`Key ${nr}` as KeyString)}`}
+                            className={`me-2 border-0 bg-transparent ${getKeyClass(`Key ${nr}` as KeyString)} ${styles.customInput}`}
                         >
                             {keyValues.get(`Key ${nr}` as KeyString)?.trim() !== "" ? (
                                 <i className="bi bi-square-fill"></i>

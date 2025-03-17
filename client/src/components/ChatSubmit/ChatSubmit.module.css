@@ -1,0 +1,11 @@
+.customInput {
+    border: 2px solid transparent !important; /* Adds a thin black border */
+    background-color: transparent !important; /* Ensures the background remains transparent */
+    outline: none !important; /* Removes default focus outline */
+}
+
+.customInput:focus {
+    border: 2px solid rgb(var(--bs-body-color-rgb)) !important;
+    border-color: rgb(var(--bs-body-color-rgb)) !important; /* Keeps the border black on focus */
+    box-shadow: none !important; /* Removes Bootstrap's blue glow */
+}
