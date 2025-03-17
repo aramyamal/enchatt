@@ -2,6 +2,11 @@ import { Model, InferAttributes, InferCreationAttributes, CreationOptional, Data
 import { sequelize } from './conn';
 import { ChatsModel } from './chats.db';
 
+/**
+ * represents a message
+ * 
+ * this model is mapped to the Messages table in the database
+ */
 export class messagesModel extends Model<InferAttributes<messagesModel>, InferCreationAttributes<messagesModel>> {
     declare id: CreationOptional<number>;
     declare chatKey : string;
@@ -11,6 +16,16 @@ export class messagesModel extends Model<InferAttributes<messagesModel>, InferCr
     declare iv: string
 }
 
+/**
+ * initializes the messagesModel schema with Sequelize
+ * 
+ * id: primary key which is auto incremented
+ * chatKey: foreign key linking to `ChatsModel.key`
+ * sender: sender identifier
+ * content: message content
+ * createdAt: timestamp of message
+ * iv: initialization vector for encryption
+ */
 messagesModel.init(
     {
         id : {

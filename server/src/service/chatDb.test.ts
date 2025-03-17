@@ -10,37 +10,23 @@ let testKey: string;
 let testIv: string
 
 beforeAll(async () => {
-    // ensure a fresh databse before all tests
+    // ensure a fresh database before all tests
     await sequelize.sync({ force: true }); 
 });
-
-afterAll(async () => {
-    // close the database connection after each test
-    await sequelize.close();
-});
-
-
-beforeEach(() => {
-    chatService = new chatsDbService();
-    testKey = crypto.randomBytes(crypto.randomInt(32) + 1).toString("ascii");
-    testIv = String.fromCharCode( ... crypto.getRandomValues(new Uint8Array(12)));
-})
 
 beforeEach(async () => {
     chatService = new chatsDbService();
 
-    // ✅ Safe testKey format
+    // testKey and testIv needs to be a fixed length and not ascii for db queries
     testKey = crypto.randomBytes(16).toString("hex");
-
-    // ✅ Safe IV format
     testIv = crypto.randomBytes(12).toString("hex");
 
-    // ✅ Ensure Chat Exists Before Tests
+    // ensure chat exists before tests
     await chatService.getOrCreateChat(testKey);
 });
 
 afterEach(async () => {
-    // ✅ Clear tables between tests
+    // clear tables between tests
     await messagesModel.destroy({ where: {} });
     await ChatsModel.destroy({ where: {} });
 });

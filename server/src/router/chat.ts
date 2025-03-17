@@ -8,6 +8,14 @@ const chatService: IChatService = new chatsDbService();
 
 export const chatRouter = express.Router();
 
+/**
+ * @route GET /chat/:key
+ * retrieves chat messages for a given key, or creates a new chat if it does not exist
+ * 
+ * @param {Request<{ key: string }>} req - express request object with a chat key as a URL parameter
+ * @param {Response<{ messages: messagesModel[], ivs: string } | { error: string }>} res - response containing messages and an iv, or an error
+ * @returns {Promise<void>} - JSON response with chat messages and iv or an error message
+ */
 chatRouter.get("/chat/:key", async (
     req: Request<{ key: string }>,
     res: Response<{ messages: messagesModel[], ivs: string } | { error: string }>
@@ -26,7 +34,14 @@ chatRouter.get("/chat/:key", async (
     }
 });
 
-
+/**
+ * @route POST /chat/:key
+ * sends message to the specific chat given by the key
+ * 
+ * @param {Request<{ key: string }, {}, { sender: string, content: string, iv: string }>} req - express request with a chat key as a URL parameter and sender, message content, and iv in the request body.
+ * @param {Response<messagesModel | string>} res - response containing the new message or an error
+ * @returns {Promise<void>} - JSON response with the new message or an error
+ */
 chatRouter.post("/chat/:key", async (
     req: Request<{ key: string }, {}, { sender: string, content: string, iv: string }>,
     res: Response<messagesModel | string>
@@ -50,6 +65,15 @@ chatRouter.post("/chat/:key", async (
 }
 );
 
+
+/**
+ * @route GET /chats
+ * retrieves up to four chats using their keys
+ * 
+ * @param {Request<{}, {}, {}, { key1?: string, key2?: string, key3?: string, key4?: string }>} req - express request object with optional keys as query parameters
+ * @param {Response<{ messages: messagesModel[], salts: (string | null)[] } | string>} res - response containing chat messages and salts or an error
+ * @returns {Promise<void>} - JSON response with multiple chats combined into one or an error
+ */
 chatRouter.get("/chats", async (
     req: Request<{}, {}, {}, {
         key1?: string,

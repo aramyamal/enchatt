@@ -5,11 +5,15 @@ import { createServer } from "http";
 import { sequelize } from "../db/conn";
 import { initializeSocket } from "./socket";
 
-
 export const app = express();
 export const httpServer = createServer(app);
 
-
+/**
+ * configures express middleware and routes
+ * 
+ * - parses incoming JSON requests
+ * - enables CORS for frontend communication
+ */
 app.use(express.json());
 app.use(cors({
     origin: "http://localhost:5173",
@@ -17,11 +21,20 @@ app.use(cors({
 }));
 app.use("/", chatRouter);
 
-
-// initialize server side socket
+/**
+ * initializes and exports the WebSocket server
+ * 
+ * @constant {import("socket.io").Server} io - the WebSocket server instance
+ */
 export const io = initializeSocket(httpServer);
 
-sequelize.sync({force : true})
+/**
+ * synchronizes the Sequelize database
+ * 
+ * - if `force: true` is set, it drops and recreates all tables
+ * - logs the database synchronization status to the console
+ */
+sequelize.sync({ force: true })
   .then(() => {
     console.log('Database synchronized');
   })
