@@ -57,15 +57,14 @@ chatRouter.get("/chats", async (
         key3?: string,
         key4?: string
     }>,
-<<<<<<< HEAD
+    
     res: Response<{ messages: messagesModel[], salts: (string | null)[] } | string>
 
-=======
-    res: Response<{ messages: messagesModel[], salts: (string | null)[]} | string>
->>>>>>> main
+
 ) => {
     try {
         const { key1, key2, key3, key4 } = req.query;
+
         if (!key1 && !key2 && !key3 && !key4) {
             res.status(400).send("At least one key must be provided.");
             return;
@@ -79,10 +78,6 @@ chatRouter.get("/chats", async (
         );
 
         res.status(202).json(combinedChat);
-        if (!combinedChat) {
-            res.status(500).send("Failed to retrieve chats.");
-        }
-        
     }
     catch (e: any) {
         if (e instanceof HttpError) {
