@@ -19,17 +19,18 @@ import socket from "../../utils/socket";
  * @returns {JSX.Element} - the rendered component.
  */
 export function ChatSubmit(
-        { updateDerivedKeys, 
-        updateRawKeys, 
-        derivedKeys, 
-        rawKeys, 
+    { updateDerivedKeys,
+        updateRawKeys,
+        derivedKeys,
+        rawKeys,
         username
     }: {
-        updateDerivedKeys: (activeKeys: RawKeys) => void, 
-        updateRawKeys: (rawKeys: RawKeys) => void, 
-        derivedKeys: DerivedKeys, 
-        rawKeys: RawKeys, 
-        username: string },
+        updateDerivedKeys: (activeKeys: RawKeys) => void,
+        updateRawKeys: (rawKeys: RawKeys) => void,
+        derivedKeys: DerivedKeys,
+        rawKeys: RawKeys,
+        username: string
+    },
 ) {
 
 
@@ -42,13 +43,13 @@ export function ChatSubmit(
         ["Key 4", ""]
     ]));
 
-     /**
-     * handles changes to key values and updates the parent state
-     *
-     * @param {KeyString} keyName - the name of the key
-     * @param {string} value - the new value of the key
-     * @returns {Promise<void>} - a promise that resolves when the key is updated
-     */
+    /**
+    * handles changes to key values and updates the parent state
+    *
+    * @param {KeyString} keyName - the name of the key
+    * @param {string} value - the new value of the key
+    * @returns {Promise<void>} - a promise that resolves when the key is updated
+    */
     const handleKeyChange = async (keyName: KeyString, value: string) => {
         const updatedKeyValues = new Map(keyValues);
         updatedKeyValues.set(keyName, value);
@@ -88,16 +89,16 @@ export function ChatSubmit(
      */
     function getHashedFromKeyString(keyString: KeyString): RawKeyObject | undefined {
         switch (keyString) {
-            case "Key 1": return rawKeys.key1; 
+            case "Key 1": return rawKeys.key1;
             case "Key 2": return rawKeys.key2;
             case "Key 3": return rawKeys.key3;
-            case "Key 4": return rawKeys.key4; 
+            case "Key 4": return rawKeys.key4;
         }
     }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
-            const rawKey: RawKeyObject | undefined = 
+            const rawKey: RawKeyObject | undefined =
                 getHashedFromKeyString(selectedKey as KeyString);
             const derivedKey: CryptoKey | undefined =
                 derivedKeys[convertToKeyString(selectedKey)];
@@ -175,12 +176,14 @@ export function ChatSubmit(
                     <Dropdown.Toggle className={`bg-transparent border-0 ${getKeyClass(selectedKey as KeyString)}`}>
                         {selectedKey}
                     </Dropdown.Toggle>
-
                     <Dropdown.Menu>
                         {[...keyValues.keys()].map((key) => (
-                            <Dropdown.Item className={`${getKeyClass(key as KeyString)}`} key={key} eventKey={key}>
-                                {key}
-                            </Dropdown.Item>
+                            <>
+                                <br className="visually-hidden"></br>
+                                <Dropdown.Item className={`${getKeyClass(key as KeyString)}`} key={key} eventKey={key}>
+                                    <span className="visually-hidden-focusable">Select{"\u00A0"}</span>{key}
+                                </Dropdown.Item>
+                            </>
                         ))}
                     </Dropdown.Menu>
                 </Dropdown>
