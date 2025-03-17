@@ -115,22 +115,22 @@ export function ChatSubmit(
         aesKey: CryptoKey
     ) {
         try {
-            const encrypted = await encrypt(content, aesKey);
+            const encryptedData = await encrypt(username, content, aesKey);
 
             // emit the encrypted message via Socket.io
             socket.emit("sendMessage", {
                 chatId: rawKey.hashed,
-                sender: username,
-                message: encrypted.ciphertext,
-                iv: encrypted.iv
+                sender: encryptedData.usernameCipher,
+                message: encryptedData.messageCipher,
+                iv: encryptedData.iv
             });
 
             // console log output for when a message is successfully sent via a socket
             console.log("Message sent via socket:", {
                 chatId: rawKey.hashed,
-                sender: username,
-                message: encrypted.ciphertext,
-                iv: encrypted.iv
+                sender: encryptedData.usernameCipher,
+                message: encryptedData.messageCipher,
+                iv: encryptedData.iv
             });
         } catch (error) {
             console.error("Failed to send chat to key ", rawKey.raw, error);

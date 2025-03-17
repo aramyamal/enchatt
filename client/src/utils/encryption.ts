@@ -12,7 +12,7 @@ export async function hashKey(rawKey: string | undefined): Promise<string> {
     const data: Uint8Array = new TextEncoder().encode(rawKey);
     const hashBuffer: ArrayBuffer = await window.crypto.subtle
         .digest('SHA-256', data);
-    
+
     // convert data in form ArrayBuffer to hex string before returning
     return Array.from(new Uint8Array(hashBuffer))
         .map((b) => b.toString(16).padStart(2, '0'))
@@ -60,7 +60,8 @@ export async function deriveAesKey(
 }
 
 interface EncryptedData {
-    ciphertext: string;
+    usernameCipher: string,
+    messageCipher: string;
     iv: string;
 }
 
@@ -73,35 +74,52 @@ interface EncryptedData {
  * @returns A Promise resolving to an EncryptedData object containing the 
  * base64-encoded ciphertext and IV.
  */
-export async function encrypt(message: string, aesKey: CryptoKey):
+export async function encrypt(username: string, message: string, aesKey: CryptoKey):
     Promise<EncryptedData> {
 
-    const data: Uint8Array = new TextEncoder().encode(message);
+    const usernameData: Uint8Array = new TextEncoder().encode(username);
+    const messageData: Uint8Array = new TextEncoder().encode(message);
 
     // generate a random 12-byte IV for AES-GCM
     const iv: Uint8Array = window.crypto.getRandomValues(new Uint8Array(12));
 
-    const encrypted: ArrayBuffer = await window.crypto.subtle.encrypt(
+    const encryptedUsername: ArrayBuffer = await window.crypto.subtle.encrypt(
         { name: "AES-GCM", iv },
         aesKey,
-        data
+        usernameData
+    );
+
+    const encryptedMessage: ArrayBuffer = await window.crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        aesKey,
+        messageData
     );
 
     // convert to string
-    const encryptedBytes: Uint8Array = new Uint8Array(encrypted);
-    const ciphertextBase64: string = btoa(
-        String.fromCharCode(...encryptedBytes)
+    const encryptedUsernameBytes: Uint8Array = new Uint8Array(encryptedUsername);
+    const usernameCipherBase64: string = btoa(
+        String.fromCharCode(...encryptedUsernameBytes)
     );
+
+    const encryptedMessageBytes: Uint8Array = new Uint8Array(encryptedMessage);
+    const messageCipherBase64: string = btoa(
+        String.fromCharCode(...encryptedMessageBytes)
+    );
+
     const ivBase64: string = btoa(
         String.fromCharCode(...iv)
     );
 
-    return { ciphertext: ciphertextBase64, iv: ivBase64 };
+    return { 
+        usernameCipher: usernameCipherBase64,
+        messageCipher: messageCipherBase64, 
+        iv: ivBase64 
+    };
 }
 
 interface DecryptionData {
     success: boolean;
-    message: string;
+    decrypted: string;
 }
 
 /**
@@ -137,7 +155,7 @@ export async function decrypt(
         // convert decrypted to string and return
         return {
             success: true,
-            message: new TextDecoder().decode(decrypted)
+            decrypted: new TextDecoder().decode(decrypted)
         };
 
     } catch (error: unknown) {
@@ -146,17 +164,17 @@ export async function decrypt(
         if (error instanceof Error && error.name === "OperationError") {
             return {
                 success: false,
-                message: "[Decryption failed - message may be corrupted or using different key]"
+                decrypted: "[Decryption failed - message may be corrupted or using different key]"
             };
         } else if (error instanceof Error) {
             return {
                 success: false,
-                message: `[Decryption error: ${error.message}]`
+                decrypted: `[Decryption error: ${error.message}]`
             };
         } else {
             return {
                 success: false,
-                message: "[Unknown decryption error]"
+                decrypted: "[Unknown decryption error]"
             };
         }
     }
