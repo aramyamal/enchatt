@@ -7,9 +7,31 @@ import React from "react";
 import { encrypt, hashKey } from "../../utils/encryption";
 import socket from "../../utils/socket";
 
+/**
+ * ChatSubmit component handles message input, encryption, and submission via WebSockets.
+ *
+ * @param {Object} props - props
+ * @param {Function} props.updateDerivedKeys - function to update derived keys in the parent component
+ * @param {Function} props.updateRawKeys - function to update raw keys in the parent component
+ * @param {DerivedKeys} props.derivedKeys - the active encryption keys
+ * @param {RawKeys} props.rawKeys - the raw keys used for encryption
+ * @param {string} props.username - the username of the sender
+ * @returns {JSX.Element} - the rendered component.
+ */
 export function ChatSubmit(
-    { updateDerivedKeys, updateRawKeys, derivedKeys, rawKeys, username }: { updateDerivedKeys: (activeKeys: RawKeys) => void, updateRawKeys: (rawKeys: RawKeys) => void, derivedKeys: DerivedKeys, rawKeys: RawKeys, username: string },
+        { updateDerivedKeys, 
+        updateRawKeys, 
+        derivedKeys, 
+        rawKeys, 
+        username
+    }: {
+        updateDerivedKeys: (activeKeys: RawKeys) => void, 
+        updateRawKeys: (rawKeys: RawKeys) => void, 
+        derivedKeys: DerivedKeys, 
+        rawKeys: RawKeys, 
+        username: string },
 ) {
+
 
     const [selectedKey, setSelectedKey] = useState<string>("Key 1");
     const [newMessage, setNewMessage] = useState<string>("");
@@ -20,6 +42,13 @@ export function ChatSubmit(
         ["Key 4", ""]
     ]));
 
+     /**
+     * handles changes to key values and updates the parent state
+     *
+     * @param {KeyString} keyName - the name of the key
+     * @param {string} value - the new value of the key
+     * @returns {Promise<void>} - a promise that resolves when the key is updated
+     */
     const handleKeyChange = async (keyName: KeyString, value: string) => {
         const updatedKeyValues = new Map(keyValues);
         updatedKeyValues.set(keyName, value);
@@ -38,6 +67,11 @@ export function ChatSubmit(
         updateDerivedKeys(rawKeys);
     };
 
+    /**
+     * handles selection of a new encryption key
+     *
+     * @param {string | null} eventKey - the selected keys name
+     */
     const handleSelect = (eventKey: string | null) => {
         if (eventKey) {
             setSelectedKey(eventKey);
@@ -45,6 +79,13 @@ export function ChatSubmit(
         return;
     };
 
+
+    /**
+     * retrieves the hashed key object from the raw keys based on a given key string.
+     *
+     * @param {KeyString} keyString - the selected key name
+     * @returns {RawKeyObject | undefined} the corresponding raw key object
+     */
     function getHashedFromKeyString(keyString: KeyString): RawKeyObject | undefined {
         switch (keyString) {
             case "Key 1": return rawKeys.key1; 

@@ -2,18 +2,32 @@ import { Form, InputGroup } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import styles from "./EncryptedInput.module.css"
 
+
+/**
+ * EncryptedInput component renders an input field with a scrambling placeholder effect
+ *
+ * @param {Object} props - props
+ * @param {string} props.inputPlaceholder - the placeholder text displayed in the input field
+ * @param {Function} props.handleInput - function triggered when the user presses "Enter" and updates state in paret component
+ * @returns {JSX.Element}  - the rendered input component
+ */
 export function EncryptedInput( 
     {inputPlaceholder, handleInput} : {inputPlaceholder : string, handleInput : (input : string) => void}
 ) {
 
-    // constant for input or plain text
-    const [inputValue, setInputValue] = useState("")
-    
-    // constants for scramble effect
+    // state for storing user input
+    const [inputValue, setInputValue] = useState("");
+
+    // states for placeholder scrambling effect
     const [displayText, setDisplayText] = useState(inputPlaceholder);
     const [isScrambled, setIsScrambled] = useState(false);
 
-    // function that scrambles text
+    /**
+     * scrambles the actual text by replacing characters with random letters
+     *
+     * @param {string} text - the actual text to scramble
+     * @returns {string} - the scrambled text
+     */
     const scrambleText = (text: string) => {
         return text
             .split("")
@@ -47,6 +61,11 @@ export function EncryptedInput(
         }
     }, [isScrambled]);
 
+    /**
+     * handles "Enter" key press to submit the input value
+     *
+     * @param {React.KeyboardEvent} e - the keyboard event
+     */
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             handleInput(inputValue)

@@ -8,6 +8,15 @@ import { useNavigate } from "react-router-dom";
 import { Logo } from "../Logo/Logo";
 import { LoginBox } from "../LoginBox/LoginBox";
 
+
+/**
+ * Login component renders the login page
+ * once a username is entered, the user is navigated to the chat page
+ *
+ * @param {Object} props - props
+ * @param {Function} props.handleUsername - function to update the username in the parent component
+ * @returns {JSX.Element} the rendered Login component
+ */
 function Login({handleUsername} : {handleUsername: (username : string) => void}) {
     
     // hook for navigation

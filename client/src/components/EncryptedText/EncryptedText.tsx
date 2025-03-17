@@ -9,14 +9,15 @@ interface EncryptedTextProps {
 }
 
 /**
-* Component for scramble (encrypt effect)
-* Component can either be just to scramble some text or it can be used for user input
-* @prop {string} text - true text to scramble
-* @prop {number} encryptEffectTime - time for effect in milli seconds
-* @prop {number} trueTextTime - time for text prop in milli seconds
-* @prop {boolean} input - is component used for text or input
-* @prop {function} handleInputFunction - function from parent component if input needs to be handled
-* @prop {string} fontSizeProp - bootstrap fontSizeProp class
+* EncrytpedText component scrambles some text (encryption effect)
+* 
+* @param {Object} props - props
+* @param {string} props.text - true text to scramble
+* @param {number} props.encryptEffectTime - time for effect in milli seconds
+* @param {number} props.trueTextTime - time for text prop in milli seconds
+* @param {boolean} props.input - is component used for text or input
+* @param {function} props.handleInputFunction - function from parent component if input needs to be handled
+* @param {string} props.fontSizeProp - bootstrap fontSizeProp class
 * @returns a <div> with props
 */
 export function EncryptedText ({ text, 
@@ -25,11 +26,16 @@ export function EncryptedText ({ text,
                                  fontSizeProp = "1.5rem"} : 
                                  EncryptedTextProps) {
     
-    // constants for scramble effect
+    // states for scramble effect
     const [displayText, setDisplayText] = useState(text);
     const [isScrambled, setIsScrambled] = useState(false);
 
-    // function that scrambles text
+    /**
+     * scrambles the given text by replacing characters with random letters
+     *
+     * @param {string} text - the actual text to scramble.
+     * @returns {string} - the scrambled text.
+     */
     const scrambleText = (text: string) => {
         return text
             .split("")
@@ -64,8 +70,11 @@ export function EncryptedText ({ text,
     }, [isScrambled]);
     
     return (
-        <div className={`border-0 bg-transparent text-center font-monospace`} style={{fontSize : fontSizeProp }}>
-            {displayText}
-        </div>
+        <>
+            <div className={`border-0 bg-transparent text-center font-monospace`} style={{fontSize : fontSizeProp }}>
+                {displayText}
+            </div>
+        </>
+
     )
 }

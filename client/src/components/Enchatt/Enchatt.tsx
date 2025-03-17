@@ -4,7 +4,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import { useNavigate } from 'react-router-dom';
 import { DerivedKeys, RawKeys } from '../../utils/keys';
 import { deriveAesKey } from '../../utils/encryption';
@@ -12,7 +11,17 @@ import { TopBar } from '../TopBar/TopBar';
 import { ChatBox } from '../ChatBox/ChatBox';
 import { ChatSubmit } from '../ChatSubmit/ChatSubmit';
 
+
+
+/**
+ * Enchatt component represents the chat page
+ *
+ * @param {Object} props - props
+ * @param {string} props.username - the username of the current user
+ * @returns {JSX.Element} - the rendered chat interface
+ */
 function Enchatt({ username }: { username: string }) {
+    
     const navigate = useNavigate();
     const [derivedKeyValues, setDerivedKeyValues] = useState<DerivedKeys>({});
     const [rawKeyValues, setRawKeyValues] = useState<RawKeys>({});

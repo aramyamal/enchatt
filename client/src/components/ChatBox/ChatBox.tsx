@@ -4,6 +4,15 @@ import { useState, useEffect, useRef } from "react";
 import { MessageComponent } from "../Message/Message";
 import socket from "../../utils/socket"; // <-- Import the socket instance
 
+
+/**
+ * ChatBox component displays the chat messages and handles real-time updates via WebSockets
+ *
+ * @param {Object} props - props
+ * @param {RawKeys} props.rawKeys - the raw encryption keys used for retrieving chats
+ * @param {DerivedKeys} props.derivedKeys - the derived encryption keys for decrypting messages
+ * @returns {JSX.Element} - the rendered chat box component
+ */
 export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
     const { rawKeys, derivedKeys } = props;
 
