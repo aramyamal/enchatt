@@ -52,10 +52,16 @@ export class chatsDbService implements IChatService {
 
             salts.push(chat.salt);
 
-            const messages = await messagesModel.findAll({ where: { chatKey: key } });
-            const updatedMessages = messages.map(msg => ({
-                ...msg.get({ plain: true })
-            }));
+            // update 'key' in database
+            for (const msg of messages) {
+                await msg.update({
+                    key: `Key ${i + 1}` as "Key 1" | "Key 2" | "Key 3" | "Key 4"
+                });
+            }
+    
+            // fetch updated messages after update
+            const updatedMessages = await messagesModel.findAll({ where: { chatKey: key } });
+    
             allMessages.push(...updatedMessages);
         }
 

@@ -1,6 +1,4 @@
 import express, { Request, Response } from "express";
-import { Chat } from "../model/chat.interface";
-import { Message } from "../model/message.interface";
 import { HttpError } from "../errors/HttpError";
 import { IChatService  } from "../service/IChatService";
 import { chatsDbService } from "../service/chatsDbService";
@@ -59,7 +57,7 @@ chatRouter.get("/chats", async (
         key3?: string,
         key4?: string
     }>,
-    res: Response<{ messages: messagesModel[], salts: (string | null)[]} | string>
+    res: Response<{ messages: messagesModel[], salts: (string | null)[] } | string>
 ) => {
     try {
         const { key1, key2, key3, key4 } = req.query;
@@ -76,6 +74,10 @@ chatRouter.get("/chats", async (
         );
 
         res.status(202).json(combinedChat);
+        if (!combinedChat) {
+            res.status(500).send("Failed to retrieve chats.");
+        }
+        
     }
     catch (e: any) {
         if (e instanceof HttpError) {
