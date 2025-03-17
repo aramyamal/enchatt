@@ -175,14 +175,15 @@ export function ChatSubmit(
                 />
 
                 <Dropdown onSelect={handleSelect}>
-                    <Dropdown.Toggle className={`bg-transparent border-0 ${getKeyClass(selectedKey as KeyString)} `}>
+                    <Dropdown.Toggle className={`bg-transparent border-0 
+                                                ${getKeyClass(selectedKey as KeyString)} `}>
                         {selectedKey}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                         {[...keyValues.keys()].map((key) => (
                             <>
                                 <br className="visually-hidden"></br>
-                                <Dropdown.Item className={`${getKeyClass(key as KeyString)}`} key={key} eventKey={key}>
+                                <Dropdown.Item className={`${getKeyClass(key as KeyString)} ${styles.customDropdownItem}`} key={key} eventKey={key}>
                                     <span className="visually-hidden-focusable">Select{"\u00A0"}</span>{key}
                                 </Dropdown.Item>
                             </>

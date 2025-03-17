@@ -9,3 +9,13 @@
     border-color: rgb(var(--bs-body-color-rgb)) !important; /* Keeps the border black on focus */
     box-shadow: none !important; /* Removes Bootstrap's blue glow */
 }
+.customDropdownItem {
+    border: none !important;
+}
+
+.customDropdownItem:active, 
+.customDropdownItem:focus {
+    background-color: rgb(var(--bs-body-color-rgb)) !important; /* Change background to black when clicked */
+    color: white !important; /* Ensure text stays readable */
+}
+
