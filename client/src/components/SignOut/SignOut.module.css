@@ -10,10 +10,10 @@
     left: 0;
     bottom: 0;
     width: 100%;
-    height: 2px;
-    background-color: black;
+    height: 1px;
     transform: scaleX(0);
-    transition: transform 0.1s ease-in-out;
+    transition: transform 0.3s ease-in-out;
+    background-color: transparent;
 }
 
 .signoutButton:hover::after {

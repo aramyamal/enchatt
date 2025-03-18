@@ -2,7 +2,7 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import Dropdown from "react-bootstrap/Dropdown";
 import { useEffect, useState } from "react";
-import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, getKeyClass } from "../../utils/keys";
+import { DerivedKeys, KeyString, RawKeyObject, RawKeys, convertToKeyString, getKeyBorderClass, getKeyClass } from "../../utils/keys";
 import React from "react";
 import { encrypt, hashKey } from "../../utils/encryption";
 import socket from "../../utils/socket";
@@ -181,12 +181,12 @@ export function ChatSubmit(
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                         {[...keyValues.keys()].map((key) => (
-                            <>
-                                <br className="visually-hidden"></br>
-                                <Dropdown.Item className={`${getKeyClass(key as KeyString)} ${styles.customDropdownItem}`} key={key} eventKey={key}>
-                                    <span className="visually-hidden-focusable">Select{"\u00A0"}</span>{key}
+                            <div>
+                                <p aria-hidden className="visually-hidden">{" "}</p>
+                                <Dropdown.Item className={`rounded-1 ${styles.selectKey} ${getKeyClass(key as KeyString)} ${styles.customDropdownItem}`} key={key} eventKey={key}>
+                                    <span aria-hidden className="visually-hidden-focusable">Select{"\u00A0"}</span>{key}
                                 </Dropdown.Item>
-                            </>
+                            </div>
                         ))}
                     </Dropdown.Menu>
                 </Dropdown>
@@ -197,11 +197,11 @@ export function ChatSubmit(
                     <React.Fragment key={nr}>
                         <Form.Control
                             className={`
-                                ms-2
                                 border-0
                                 form-control-sm
                                 rounded
                                 ${getKeyClass(`Key ${nr}` as KeyString)}
+                                ${getKeyBorderClass(`Key ${nr}` as KeyString)}
                                 ${styles.customInput}
                             `}
                             placeholder={`Key ${nr}`}

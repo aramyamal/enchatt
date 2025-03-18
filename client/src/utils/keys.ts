@@ -71,3 +71,25 @@ export function getKeyClass(keyString: KeyString): string {
             return "key1";
     }
 }
+
+/**
+ * Retrieves the CSS class name for borders associated with a given 
+ * `KeyString` value.
+ *
+ * @param keyString - The key string to map to a class name.
+ * @returns The corresponding CSS class name for correct border color.
+ */
+export function getKeyBorderClass(keyString: KeyString): string {
+    switch (keyString) {
+        case "Key 1":
+            return "key1border";
+        case "Key 2":
+            return "key2border";
+        case "Key 3":
+            return "key3border";
+        case "Key 4":
+            return "key4border";
+        default:
+            return "key1border";
+    }
+}

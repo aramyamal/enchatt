@@ -1,21 +1,57 @@
 .customInput {
-    border: 2px solid transparent !important; /* Adds a thin black border */
-    background-color: transparent !important; /* Ensures the background remains transparent */
-    outline: none !important; /* Removes default focus outline */
+    border: 0px solid transparent !important;
+    /* Adds a thin black border */
+    background-color: transparent !important;
+    /* Ensures the background remains transparent */
+    outline: none !important;
+    /* Removes default focus outline */
 }
 
 .customInput:focus {
-    border: 2px solid rgb(var(--bs-body-color-rgb)) !important;
-    border-color: rgb(var(--bs-body-color-rgb)) !important; /* Keeps the border black on focus */
-    box-shadow: none !important; /* Removes Bootstrap's blue glow */
+    border: 0px solid rgb(var(--bs-body-color-rgb)) !important;
+    border-color: rgb(var(--bs-body-color-rgb)) !important;
+    /* Keeps the border black on focus */
+    box-shadow: none !important;
+    /* Removes Bootstrap's blue glow */
 }
+
 .customDropdownItem {
     border: none !important;
 }
 
-.customDropdownItem:active, 
+.customDropdownItem:active,
 .customDropdownItem:focus {
-    background-color: rgb(var(--bs-body-color-rgb)) !important; /* Change background to black when clicked */
-    color: white !important; /* Ensure text stays readable */
+    background-color: rgb(var(--bs-body-color-rgb)) !important;
+    /* Change background to black when clicked */
+    color: white !important;
+    /* Ensure text stays readable */
 }
 
+
+.selectKey {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.selectKey::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: black;
+    transform: scaleX(0);
+    transition: transform 0.1s ease-in-out;
+    background-color: var(--bs-body-color);
+}
+
+.selectKey:hover::after {
+    transform: scaleX(1);
+}
+
+.icon_transition {
+    transition: opacity 0.3s ease-in-out;
+    opacity: 1;
+}

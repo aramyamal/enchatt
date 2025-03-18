@@ -63,12 +63,38 @@ body {
     color: var(--bs-body-color);
 }
 
+.key1border:not(:placeholder-shown) {
+    border: 3px solid var(--bs-body-color) !important;
+}
+
+.key1border:focus {
+    border: 3px solid var(--bs-body-color) !important;
+}
+
+.key1border {
+    border: 1px solid var(--bs-body-color) !important;
+    transition: border 0.2s ease-in-out;
+}
+
 .key2 {
     color: rgb(var(--key2-color-rgb));
 }
 
 .key2:focus {
     color: rgb(var(--key2-color-rgb));
+}
+
+.key2border:not(:placeholder-shown) {
+    border: 3px solid rgba(var(--key2-color-rgb)) !important;
+}
+
+.key2border:focus {
+    border: 3px solid rgba(var(--key2-color-rgb)) !important;
+}
+
+.key2border {
+    border: 1px solid rgba(var(--key2-color-rgb)) !important;
+    transition: border 0.2s ease-in-out;
 }
 
 .key3 {
@@ -79,10 +105,41 @@ body {
     color: rgb(var(--key3-color-rgb));
 }
 
+.key3border:not(:placeholder-shown) {
+    border: 3px solid rgba(var(--key3-color-rgb)) !important;
+}
+
+.key3border:focus {
+    border: 3px solid rgba(var(--key3-color-rgb)) !important;
+}
+
+.key3border {
+    border: 1px solid rgba(var(--key3-color-rgb)) !important;
+    transition: border 0.2s ease-in-out;
+}
+
 .key4 {
     color: rgb(var(--key4-color-rgb));
 }
 
 .key4:focus {
     color: rgb(var(--key4-color-rgb));
+}
+
+.key4border:not(:placeholder-shown) {
+    border: 3px solid rgba(var(--key4-color-rgb)) !important;
+}
+
+.key4border:focus {
+    border: 3px solid rgba(var(--key4-color-rgb)) !important;
+}
+
+.key4border {
+    border: 1px solid rgba(var(--key4-color-rgb)) !important;
+    transition: border 0.2s ease-in-out;
+}
+
+.visually-hidden {
+    display: block !important;
+    visibility: visible !important;
 }
