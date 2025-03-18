@@ -17,6 +17,7 @@ import { ChatSubmit } from '../ChatSubmit/ChatSubmit';
  *
  * @param {Object} props - props
  * @param {string} props.username - the username of the current user
+ * @param {Function} props.navigateToLogin - function for navigation to Login component
  * @returns {JSX.Element} - the rendered chat interface
  */
 function Enchatt({ username, navigateToLogin }: { username: string, navigateToLogin : () => void }) {

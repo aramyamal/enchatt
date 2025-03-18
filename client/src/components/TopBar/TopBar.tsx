@@ -6,6 +6,8 @@ import { SignOut } from "../SignOut/SignOut";
  * TopBar component displays the top bar
  * it includes a logo and a sign-out button
  *
+ * @param {Object} props - props
+ * @param {Function} props.navigateToLogin - callback function for navigation back to Login component
  * @returns {JSX.Element} the rendered top bar component
  */
 export function TopBar ({ navigateToLogin} : { navigateToLogin : () => void }) {
