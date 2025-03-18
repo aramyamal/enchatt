@@ -15,8 +15,6 @@ interface EncryptedTextProps {
 * @param {string} props.text - true text to scramble
 * @param {number} props.encryptEffectTime - time for effect in milli seconds
 * @param {number} props.trueTextTime - time for text prop in milli seconds
-* @param {boolean} props.input - is component used for text or input
-* @param {function} props.handleInputFunction - function from parent component if input needs to be handled
 * @param {string} props.fontSizeProp - bootstrap fontSizeProp class
 * @returns a <div> with props
 */
