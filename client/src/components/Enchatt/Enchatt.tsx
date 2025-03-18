@@ -38,7 +38,7 @@ function Enchatt({ username, navigateToLogin }: { username: string, navigateToLo
     };
 
     useEffect(() => {
-        if (!username) {
+        if (!username|| username.trim()==='') {
             navigate(); // redirect to login if username is empty
         }
     }, [username, navigate]); // run when username <changes></changes>
