@@ -8,10 +8,13 @@ import styles from "./SignOut.module.css"
  * 
  * @returns {JSX.Element} the rendered sign-out button
  */
-export function SignOut () {
+export function SignOut ({ navigateToLoginFromTopBar} : { navigateToLoginFromTopBar : () => void }) {
+
+    const navigateToLogin = navigateToLoginFromTopBar;
 
     return (
-        <ButtonGroup className={`${styles.signoutButton}`}>
+        <ButtonGroup className={`${styles.signoutButton}`}
+                        onClick={navigateToLogin}>
             <EncryptedText 
                 text="sign out" 
                 encryptEffectTime={2000} 

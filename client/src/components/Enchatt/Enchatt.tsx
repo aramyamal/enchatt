@@ -4,7 +4,6 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useNavigate } from 'react-router-dom';
 import { DerivedKeys, RawKeys } from '../../utils/keys';
 import { deriveAesKey } from '../../utils/encryption';
 import { TopBar } from '../TopBar/TopBar';
@@ -20,9 +19,9 @@ import { ChatSubmit } from '../ChatSubmit/ChatSubmit';
  * @param {string} props.username - the username of the current user
  * @returns {JSX.Element} - the rendered chat interface
  */
-function Enchatt({ username }: { username: string }) {
+function Enchatt({ username, navigateToLogin }: { username: string, navigateToLogin : () => void }) {
     
-    const navigate = useNavigate();
+    const navigate = navigateToLogin;
     const [derivedKeyValues, setDerivedKeyValues] = useState<DerivedKeys>({});
     const [rawKeyValues, setRawKeyValues] = useState<RawKeys>({});
 
@@ -39,15 +38,15 @@ function Enchatt({ username }: { username: string }) {
 
     useEffect(() => {
         if (!username) {
-            navigate("/"); // Redirect to login if username is empty
+            navigate(); // redirect to login if username is empty
         }
-    }, [username, navigate]); // Run when username <changes></changes>
+    }, [username, navigate]); // run when username <changes></changes>
 
     return (
         <Container fluid="xxl" className="d-flex flex-column vh-100 px-3">
             <Row className="m-0">
                 <Col className="p-0">
-                    <TopBar />
+                    <TopBar navigateToLogin={navigateToLogin}/>
                 </Col>
             </Row>
 
