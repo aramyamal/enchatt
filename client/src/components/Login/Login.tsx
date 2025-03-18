@@ -13,7 +13,7 @@ import { LoginBox } from "../LoginBox/LoginBox";
  * @param {Function} props.handleUsername - function to update the username in the parent component
  * @returns {JSX.Element} the rendered Login component
  */
-function Login({ handleUsername }: { handleUsername: (username: string) => void }) {
+export function Login({handleUsername} : {handleUsername: (username : string) => void}) {
 
     const handleUsernameInputFromLoginBox = (usernameInput: string) => {
         handleUsername(usernameInput);
