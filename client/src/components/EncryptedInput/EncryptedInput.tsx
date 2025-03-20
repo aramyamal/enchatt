@@ -11,8 +11,8 @@ import styles from "./EncryptedInput.module.css"
  * @param {Function} props.handleInput - function triggered when the user presses "Enter" and updates state in paret component
  * @returns {JSX.Element}  - the rendered input component
  */
-export function EncryptedInput( 
-    {inputPlaceholder, handleInput} : {inputPlaceholder : string, handleInput : (input : string) => void}
+export function EncryptedInput(
+    { inputPlaceholder, handleInput }: { inputPlaceholder: string, handleInput: (input: string) => void }
 ) {
 
     // state for storing user input
@@ -34,11 +34,11 @@ export function EncryptedInput(
             .map((char) => (char === " " ? " " : String.fromCharCode(97 + Math.floor(Math.random() * 26))))
             .join("");
     };
-    
+
 
     // use effect for how long the original text is displayed
     useEffect(() => {
-        const interval = setInterval(() =>{
+        const interval = setInterval(() => {
             setIsScrambled((prev) => !prev);
         }, 3000);
 
@@ -46,15 +46,15 @@ export function EncryptedInput(
     }, []);
 
     // use effect for how long the scramble effect is on
-    useEffect(() => { 
-        if (isScrambled){
+    useEffect(() => {
+        if (isScrambled) {
             const scrambleInterval = setInterval(() => {
                 setDisplayText(scrambleText(displayText));
             }, 75);
-        
+
             setTimeout(() => {
-            clearInterval(scrambleInterval);
-            setDisplayText("type your username here");
+                clearInterval(scrambleInterval);
+                setDisplayText("type your username here");
             }, 1200);
         } else {
             setDisplayText("type your username here");
@@ -74,17 +74,18 @@ export function EncryptedInput(
 
     return (
         <>
-            <div className={`${styles.bottomBorderClass} bg-transparent text-center`} style={{ width: "100%", maxWidth: "500px" }}>
-            <InputGroup className={`${styles.noCaret}`}>
-                <Form.Control
-                    className="border-0 bg-transparent text-center font-monospace shadow-none"
-                    onChange={(e) => {
-                        setInputValue(e.target.value)}}
-                    placeholder={`${displayText}`}
-                    value={inputValue}
-                    onKeyDown={handleKeyDown}
-                />
-            </InputGroup>
+            <div className={`${styles.bottomBorderClass} px-0 bg-transparent text-center`}>
+                <InputGroup className={`${styles.noCaret} col-12 col-md-8 col-lg-6`}>
+                    <Form.Control
+                        className="border-0 bg-transparent text-center font-monospace shadow-none"
+                        onChange={(e) => {
+                            setInputValue(e.target.value);
+                        }}
+                        placeholder={`${displayText}`}
+                        value={inputValue}
+                        onKeyDown={handleKeyDown}
+                    />
+                </InputGroup>
             </div>
         </>
     )

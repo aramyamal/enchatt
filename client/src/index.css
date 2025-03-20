@@ -44,6 +44,7 @@ body {
             rgb(var(--bs-secondary-bg-rgb))) !important;
     font-family: "Fira Code", monospace;
     scroll-behavior: smooth;
+    overflow: hidden;
 }
 
 .font-mono {

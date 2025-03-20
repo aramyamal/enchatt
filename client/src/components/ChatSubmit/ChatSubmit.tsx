@@ -192,35 +192,39 @@ export function ChatSubmit(
                 </Dropdown>
             </InputGroup>
 
-            <InputGroup className={`${styles.customInput}`}>
-                {[1, 2, 3, 4].map((nr) => (
-                    <React.Fragment key={nr}>
-                        <Form.Control
-                            className={`
-                                border-0
-                                form-control-sm
-                                rounded
-                                ${getKeyClass(`Key ${nr}` as KeyString)}
-                                ${getKeyBorderClass(`Key ${nr}` as KeyString)}
-                                ${styles.customInput}
-                            `}
-                            placeholder={`Key ${nr}`}
-                            aria-label={`Key ${nr}`}
-                            onChange={(e) => handleKeyChange(`Key ${nr}` as KeyString, e.currentTarget.value)}
-                            value={keyValues.get(`Key ${nr}` as KeyString) || ""}
-                        />
-                        <InputGroup.Text
-                            className={`me-2 border-0 bg-transparent ${getKeyClass(`Key ${nr}` as KeyString)} ${styles.customInput}`}
-                        >
-                            {keyValues.get(`Key ${nr}` as KeyString)?.trim() !== "" ? (
-                                <i className="bi bi-square-fill"></i>
-                            ) : (
-                                <i className="bi bi-square"></i>
-                            )}
-                        </InputGroup.Text>
-                    </React.Fragment>
-                ))}
-            </InputGroup>
+            <div className="container-fluid">
+                <div className="row">
+                    {[1, 2, 3, 4].map((nr) => (
+                        <div key={nr} className="col-12 col-sm-6 col-lg-3 p-0 mt-2">
+                            <InputGroup className={`${styles.customInput}`}>
+                                <Form.Control
+                                    className={`
+              border-0
+              form-control-sm
+              rounded
+              ${getKeyClass(`Key ${nr}` as KeyString)}
+              ${getKeyBorderClass(`Key ${nr}` as KeyString)}
+              ${styles.customInput}
+            `}
+                                    placeholder={`Key ${nr}`}
+                                    aria-label={`Key ${nr}`}
+                                    onChange={(e) => handleKeyChange(`Key ${nr}` as KeyString, e.currentTarget.value)}
+                                    value={keyValues.get(`Key ${nr}` as KeyString) || ""}
+                                />
+                                <InputGroup.Text
+                                    className={`border-0 bg-transparent ${getKeyClass(`Key ${nr}` as KeyString)} ${styles.customInput}`}
+                                >
+                                    {keyValues.get(`Key ${nr}` as KeyString)?.trim() !== "" ? (
+                                        <i className="bi bi-square-fill"></i>
+                                    ) : (
+                                        <i className="bi bi-square"></i>
+                                    )}
+                                </InputGroup.Text>
+                            </InputGroup>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

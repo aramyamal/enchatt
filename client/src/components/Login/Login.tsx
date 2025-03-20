@@ -20,13 +20,13 @@ export function Login({handleUsername} : {handleUsername: (username : string) =>
     };
 
     return (
-        <Container fluid="s" className="d-flex flex-column min-vh-100">
+        <Container fluid="lg" className="d-flex flex-column min-vh-100">
             <Row className="flex-grow-1 d-flex flex-column align-items-center justify-content-center">
                 <Col md={10} className="d-flex flex-column align-items-center">
-                    <div className="login-logo" style={{ width: "100%", maxWidth: "500px" }}>
+                    <div className="login-logo" style={{ width: "100%", maxWidth: "600px" }}>
                         <Logo />
                     </div>
-                    <div style={{ width: "25%", maxWidth: "500px" }}>
+                    <div style={{ width: "76%", maxWidth: "600px" }}>
                         <LoginBox handleUsernameInput={handleUsernameInputFromLoginBox} />
                     </div>
                 </Col>
