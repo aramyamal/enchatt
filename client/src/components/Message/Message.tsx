@@ -1,11 +1,11 @@
 import { Message } from "../../api";
-import {  DerivedKeys, RawKeys } from "../../utils/keys";
+import { DerivedKeys, RawKeys } from "../../utils/keys";
 import { decrypt } from "../../utils/encryption";
 import { useEffect, useState } from "react";
 
 export function MessageComponent({ message, derivedKeys, rawKeys }: { message: Message, derivedKeys: DerivedKeys, rawKeys: RawKeys }) {
     const [decryptedContent, setDecryptedContent] = useState<string>("");
-    const [decryptedUsername, setDecryptedUsername ] = useState<string>("");
+    const [decryptedUsername, setDecryptedUsername] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
 
     function extractDerivedKey(derivedKeys: DerivedKeys, chatKey: string): CryptoKey {
@@ -30,7 +30,7 @@ export function MessageComponent({ message, derivedKeys, rawKeys }: { message: M
             throw new Error("ERROR: Derived key not available");
         }
     }
-    
+
     function getKeyClass(hashedKey: string): string {
         switch (hashedKey) {
             case rawKeys.key1?.hashed: return "key1";
@@ -89,18 +89,17 @@ export function MessageComponent({ message, derivedKeys, rawKeys }: { message: M
 
     return (
         <>
-            <div className="my-2">
+            <div className="my-2 w-auto">
                 <span className="visually-hidden">{getSRAnnotation(message.chatKey)}</span>
-                <span className={`font-mono-bold ${getKeyClass(message.chatKey)}`}>
+                <span className={`text-wrap font-mono-bold ${getKeyClass(message.chatKey)}`}>
                     {decryptedUsername}:
                 </span>
-                <span className={`font-mono ${error ? "text-danger" : getKeyClass(message.chatKey)}`}>
+                <span className={`font-mono text-wrap text-break whitespace-normal ${error ? "text-danger" : getKeyClass(message.chatKey)}`}>
                     {error ?
                         (" " + error) :
                         (" " + (decryptedContent || "Decrypting..."))
                     }
-                </span>
-            </div>
+                </span>           </div>
         </>
     );
 }

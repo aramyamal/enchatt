@@ -113,13 +113,18 @@ export function ChatBox(props: { rawKeys: RawKeys, derivedKeys: DerivedKeys }) {
                 flexDirection: 'column',
                 height: '100%', // Take at least full height
                 overflowY: 'auto',
+                overflowX: 'hidden',
                 scrollbarWidth: 'none', // Firefox
                 msOverflowStyle: 'none', // IE/Edge
                 WebkitOverflowScrolling: 'touch', // iOS momentum scrolling
             }}
             className="hide-scrollbar"
         >
-            <div style={{ marginTop: 'auto' }}>
+            <div style={{
+                marginTop: 'auto',
+                width: '100%',
+                maxWidth: '100%'
+            }}>
                 {chat.messages.map((message, index) => (
                     <MessageComponent
                         key={`message-${index}`}
