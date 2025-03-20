@@ -26,7 +26,7 @@ export function Login({handleUsername} : {handleUsername: (username : string) =>
                     <div className="login-logo" style={{ width: "100%", maxWidth: "600px" }}>
                         <Logo />
                     </div>
-                    <div style={{ width: "76%", maxWidth: "600px" }}>
+                    <div style={{ width: "76%", maxWidth: "250px" }}>
                         <LoginBox handleUsernameInput={handleUsernameInputFromLoginBox} />
                     </div>
                 </Col>
